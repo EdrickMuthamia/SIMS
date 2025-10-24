@@ -69,7 +69,7 @@ export default function UserManagement() {
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
 
-      {/* Header */}
+     
       <View style={styles.header}>
         <View style={styles.headerTop}>
           <TouchableOpacity onPress={() => router.back()}>
@@ -91,7 +91,7 @@ export default function UserManagement() {
         <Text style={styles.headerText}>USER MANAGEMENT</Text>
       </View>
 
-      {/* Search Bar */}
+    
       <View style={styles.searchBar}>
         <TextInput
           placeholder="SEARCH –"
@@ -100,10 +100,10 @@ export default function UserManagement() {
         />
       </View>
 
-      {/* Scan History Label */}
+ 
       <Text style={styles.scanLabel}>SCAN HISTORY</Text>
 
-      {/* Cards */}
+     
       <ScrollView contentContainerStyle={styles.scrollArea}>
         {users.map((user, i) => (
           <Animated.View
@@ -138,7 +138,7 @@ export default function UserManagement() {
                         ? COLORS.success
                         : user.status === "PENDING"
                         ? COLORS.warning
-                        : "#FF3B3B", // red for DENIED
+                        : "#FF3B3B", 
                   },
                 ]}
               >
@@ -149,7 +149,7 @@ export default function UserManagement() {
         ))}
       </ScrollView>
 
-      {/* Bottom Navigation */}
+     
       <View style={styles.navBar}>
         <TouchableOpacity>
           <Image

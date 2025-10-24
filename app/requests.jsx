@@ -62,7 +62,7 @@ export default function Requests() {
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
 
-      {/* Header */}
+    
       <View style={styles.header}>
         <View style={styles.headerTop}>
           <TouchableOpacity onPress={() => router.back()}>
@@ -92,7 +92,7 @@ export default function Requests() {
         <Text style={styles.headerText}>REQUESTS</Text>
       </View>
 
-      {/* Search Bar */}
+   
       <View style={styles.searchBar}>
         <TextInput
           placeholder="Search..."
@@ -102,7 +102,7 @@ export default function Requests() {
       </View>
 
       <ScrollView style={styles.scroll}>
-        {/* Recents Section */}
+     
         <Text style={styles.sectionLabel}>RECENTS</Text>
         {recents.map((req, index) => (
           <View key={index} style={styles.card}>
@@ -122,7 +122,7 @@ export default function Requests() {
           </View>
         ))}
 
-        {/* History Section */}
+       
         <Text style={styles.sectionLabel}>REQUEST HISTORY</Text>
         {history.map((req, index) => (
           <View key={index} style={styles.card}>

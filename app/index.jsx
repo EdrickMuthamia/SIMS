@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -22,6 +22,8 @@ export default function OrganizationDetails() {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const translateY = useRef(new Animated.Value(30)).current;
   const pulseAnim = useRef(new Animated.Value(1)).current;
+
+  const [companyLogo, setCompanyLogo] = useState(null); 
 
   useEffect(() => {
     Animated.stagger(150, [
@@ -55,34 +57,54 @@ export default function OrganizationDetails() {
     ).start();
   }, []);
 
+  const uploadLogo = () => {
+    
+    setCompanyLogo(require("../assets/company-logo.png")); 
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" />
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.header}>
           <View style={styles.headerTop}>
-            <TouchableOpacity style={styles.menuIcon}>
+          
+            <TouchableOpacity style={styles.menuIcon} onPress={() => router.push("/menu")}>
               <Text style={styles.menuLine}>☰</Text>
             </TouchableOpacity>
 
+         
+            <TouchableOpacity onPress={uploadLogo} style={styles.logoWrapper}>
+              <Animated.View
+                style={[
+                  styles.logoCircle,
+                  { transform: [{ scale: pulseAnim }] },
+                ]}
+              >
+                <Image
+                  source={
+                    companyLogo
+                      ? companyLogo
+                      : require("../assets/icon.png") 
+                  }
+                  style={styles.headerIcon}
+                  resizeMode="contain"
+                />
+                <View style={styles.cameraOverlay}>
+                  <Image
+                    source={require("../assets/camera-icon.png")}
+                    style={styles.cameraIcon}
+                    resizeMode="contain"
+                  />
+                </View>
+              </Animated.View>
+            </TouchableOpacity>
+
             <Image
-              source={require("../assets/icon.png")}
+              source={require("../assets/splash-icon.png")}
               style={styles.logo}
               resizeMode="contain"
             />
-
-            <Animated.View
-              style={[
-                styles.logoCircle,
-                { transform: [{ scale: pulseAnim }] },
-              ]}
-            >
-              <Image
-                source={require("../assets/splash-icon.png")}
-                style={styles.headerIcon}
-                resizeMode="contain"
-              />
-            </Animated.View>
           </View>
 
           <Text style={styles.headerText}>ORGANIZATIONS DETAILS</Text>
@@ -160,6 +182,9 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
   },
+  logoWrapper: {
+    position: "relative",
+  },
   logoCircle: {
     width: 50,
     height: 50,
@@ -171,6 +196,18 @@ const styles = StyleSheet.create({
   headerIcon: {
     width: 30,
     height: 30,
+  },
+  cameraOverlay: {
+    position: "absolute",
+    bottom: -4,
+    right: -4,
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    padding: 2,
+  },
+  cameraIcon: {
+    width: 16,
+    height: 16,
   },
   headerText: {
     marginTop: 15,
