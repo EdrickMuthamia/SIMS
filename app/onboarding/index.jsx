@@ -1,44 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Animated, Easing, Dimensions, StatusBar } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Animated, Easing, Dimensions, StatusBar, Image } from "react-native";
 import { useRouter } from "expo-router";
 // Import Svg and its components needed
 import Svg, { Path, Circle, Defs, LinearGradient, Stop } from "react-native-svg";
 
 const { height } = Dimensions.get("window");
-
-// Isometric Cube Component
-const IsometricCube = ({ size = 350 }) => {
-    return (
-        <Svg width={size} height={size * 1.09} viewBox="0 0 220 240">
-            {/* Top face (Blue) */}
-            <Path
-                d="M 110 10 L 200 65 L 110 120 L 20 65 Z"
-                fill="#2196F3"
-                stroke="#1E1E1E"
-                strokeWidth="6"
-                strokeLinejoin="round"
-            />
-
-            {/* Left face (Pink) */}
-            <Path
-                d="M 20 65 L 110 120 L 110 230 L 20 175 Z"
-                fill="#FE005F"
-                stroke="#1E1E1E"
-                strokeWidth="6"
-                strokeLinejoin="round"
-            />
-
-            {/* Right face (Orange) */}
-            <Path
-                d="M 110 120 L 200 65 L 200 175 L 110 230 Z"
-                fill="#FFA500"
-                stroke="#1E1E1E"
-                strokeWidth="6"
-                strokeLinejoin="round"
-            />
-        </Svg>
-    );
-};
 
 // Spinner Component
 const Spinner = ({ size = 500 }) => {
@@ -127,7 +93,11 @@ export default function Onboarding() {
 
             {/* SPLASH PAGE */}
             <Animated.View style={[styles.splash, { opacity: splashOpacity, zIndex: showLanding ? 0 : 1 }]}>
-                <IsometricCube size={350} />
+                <Image
+                    source={require('../../assets/logo.png')}
+                    style={styles.logoImage}
+                    resizeMode="contain"
+                />
                 <Animated.View style={[styles.spinnerContainer, { transform: [{ rotate: spin }] }]}>
                     <Spinner size={100} />
                 </Animated.View>
@@ -143,7 +113,11 @@ export default function Onboarding() {
 
                 {/* Center Block (Logo and Description, centered vertically) */}
                 <View style={styles.centerBlock}>
-                    <IsometricCube size={350} />
+                    <Image
+                        source={require('../../assets/logo.png')}
+                        style={styles.logoImage}
+                        resizeMode="contain"
+                    />
 
                     <Text style={styles.descriptionCentered}>
                         Track, manage, and optimize{"\n"}all your organizational assets{"\n"}effortlessly and securely.
@@ -151,7 +125,7 @@ export default function Onboarding() {
                 </View>
 
                 {/* Explore Button (Absolute position near the bottom) */}
-                <TouchableOpacity activeOpacity={3} style={styles.exploreBtnAbsolute} onPress={handleExplore}>
+                <TouchableOpacity activeOpacity={0.3} style={styles.exploreBtnAbsolute} onPress={handleExplore}>
                     <Text style={styles.exploreText}>EXPLORE US &gt;</Text>
                 </TouchableOpacity>
             </Animated.View>
@@ -171,6 +145,10 @@ const styles = StyleSheet.create({
         ...StyleSheet.absoluteFillObject,
         alignItems: "center",
         justifyContent: "center",
+    },
+    logoImage: {
+        width: 350,
+        height: 350,
     },
     spinnerContainer: {
         position: "absolute",
