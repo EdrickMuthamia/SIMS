@@ -24,7 +24,6 @@ export default function OrganizationDetails() {
   const pulseAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
-    // Animate cards
     Animated.stagger(150, [
       Animated.parallel([
         Animated.timing(fadeAnim, {
@@ -40,7 +39,6 @@ export default function OrganizationDetails() {
       ]),
     ]).start();
 
-    // Pulse animation for logo
     Animated.loop(
       Animated.sequence([
         Animated.timing(pulseAnim, {
@@ -61,22 +59,18 @@ export default function OrganizationDetails() {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" />
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {/* Header */}
         <View style={styles.header}>
           <View style={styles.headerTop}>
-            {/* Hamburger Menu */}
             <TouchableOpacity style={styles.menuIcon}>
               <Text style={styles.menuLine}>☰</Text>
             </TouchableOpacity>
 
-            {/* Center Logo */}
             <Image
               source={require("../assets/icon.png")}
               style={styles.logo}
               resizeMode="contain"
             />
 
-            {/* Right Logo with Pulse */}
             <Animated.View
               style={[
                 styles.logoCircle,
@@ -94,7 +88,6 @@ export default function OrganizationDetails() {
           <Text style={styles.headerText}>ORGANIZATIONS DETAILS</Text>
         </View>
 
-        {/* Animated Cards */}
         <View style={styles.cardsContainer}>
           {["REQUESTS", "USER MANAGEMENT", "ITEMS"].map((label) => (
             <Animated.View
@@ -171,13 +164,9 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: "rgba(216, 161, 180, 0.3)", // faded pink
+    backgroundColor: "rgba(216, 161, 180, 0.3)",
     justifyContent: "center",
     alignItems: "center",
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 3,
   },
   headerIcon: {
     width: 30,
@@ -197,7 +186,7 @@ const styles = StyleSheet.create({
   },
   card: {
     width: screenWidth * 0.85,
-    height: 90,
+    height: 150,
     borderRadius: 20,
     backgroundColor: "rgba(255, 255, 255, 0.08)",
     borderWidth: 1,
