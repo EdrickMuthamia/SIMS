@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -43,6 +43,7 @@ export default function UserManagement() {
     },
   ];
 
+  const [searchQuery, setSearchQuery] = useState("");
   const fadeAnims = useRef(users.map(() => new Animated.Value(0))).current;
   const translateYs = useRef(users.map(() => new Animated.Value(30))).current;
 
@@ -65,11 +66,15 @@ export default function UserManagement() {
     Animated.stagger(150, animations).start();
   }, []);
 
+  const filteredUsers = users.filter((user) =>
+    user.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
 
-     
+    
       <View style={styles.header}>
         <View style={styles.headerTop}>
           <TouchableOpacity onPress={() => router.back()}>
@@ -91,21 +96,23 @@ export default function UserManagement() {
         <Text style={styles.headerText}>USER MANAGEMENT</Text>
       </View>
 
-    
+     
       <View style={styles.searchBar}>
         <TextInput
           placeholder="SEARCH –"
           placeholderTextColor={COLORS.grey}
           style={styles.input}
+          value={searchQuery}
+          onChangeText={setSearchQuery}
         />
       </View>
 
- 
+      
       <Text style={styles.scanLabel}>SCAN HISTORY</Text>
 
-     
+    
       <ScrollView contentContainerStyle={styles.scrollArea}>
-        {users.map((user, i) => (
+        {filteredUsers.map((user, i) => (
           <Animated.View
             key={i}
             style={[
@@ -128,42 +135,41 @@ export default function UserManagement() {
               <Text style={styles.metaText}>SCANNED ON: {user.date}</Text>
               <Text style={styles.metaText}>SERIAL ID: {user.serial}</Text>
             </View>
-            <View style={styles.cardRight}>
-              <View
-                style={[
-                  styles.statusBadge,
-                  {
-                    backgroundColor:
-                      user.status === "APPROVED"
-                        ? COLORS.success
-                        : user.status === "PENDING"
-                        ? COLORS.warning
-                        : "#FF3B3B", 
-                  },
-                ]}
-              >
-                <Text style={styles.statusText}>{user.status}</Text>
-              </View>
-            </View>
+            <TouchableOpacity
+              style={[
+                styles.statusBadge,
+                {
+                  backgroundColor:
+                    user.status === "APPROVED"
+                      ? COLORS.success
+                      : user.status === "PENDING"
+                      ? COLORS.warning
+                      : "#FF3B3B",
+                },
+              ]}
+              onPress={() => router.push("/status")}
+            >
+              <Text style={styles.statusText}>{user.status}</Text>
+            </TouchableOpacity>
           </Animated.View>
         ))}
       </ScrollView>
 
      
       <View style={styles.navBar}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => router.push("/scan")}>
           <Image
             source={require("../assets/scan-icon.png")}
             style={styles.navIcon}
           />
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => router.push("/home")}>
           <Image
             source={require("../assets/home-icon.png")}
             style={styles.navIcon}
           />
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => router.push("/profile")}>
           <Image
             source={require("../assets/person-icon.png")}
             style={styles.navIcon}
@@ -281,9 +287,6 @@ const styles = StyleSheet.create({
     color: COLORS.white,
     fontSize: 12,
     marginBottom: 2,
-  },
-  cardRight: {
-    marginLeft: 10,
   },
   statusBadge: {
     paddingVertical: 4,

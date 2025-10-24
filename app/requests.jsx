@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -17,6 +17,34 @@ export default function Requests() {
   const router = useRouter();
   const pulseAnim = useRef(new Animated.Value(1)).current;
 
+  const [searchQuery, setSearchQuery] = useState("");
+  const [recents, setRecents] = useState([
+    {
+      serial: "0940F80",
+      name: "LENOVO IDEAPAD",
+      requester: "NAJMA SHAABAN",
+      date: "2 Oct 2025",
+      status: null,
+    },
+  ]);
+
+  const [history, setHistory] = useState([
+    {
+      serial: "0940F80",
+      name: "DELL G16 7630",
+      requester: "WILLIAM KURIA",
+      date: "10 Mar 2024",
+      status: null,
+    },
+    {
+      serial: "0940F80",
+      name: "PREDATOR PRO M612",
+      requester: "EDRICK MUTHAMIA",
+      date: "17 Apr 2025",
+      status: null,
+    },
+  ]);
+
   useEffect(() => {
     Animated.loop(
       Animated.sequence([
@@ -34,35 +62,30 @@ export default function Requests() {
     ).start();
   }, []);
 
-  const recents = [
-    {
-      serial: "0940F80",
-      name: "LENOVO IDEAPAD",
-      requester: "NAJMA SHAABAN",
-      date: "2 Oct 2025",
-    },
-  ];
+  const handleStatusChange = (section, index, newStatus) => {
+    const update = (list, setList) => {
+      const updated = [...list];
+      updated[index].status = newStatus;
+      setList(updated);
+    };
 
-  const history = [
-    {
-      serial: "0940F80",
-      name: "DELL G16 7630",
-      requester: "WILLIAM KURIA",
-      date: "10 Mar 2024",
-    },
-    {
-      serial: "0940F80",
-      name: "PREDATOR PRO M612",
-      requester: "EDRICK MUTHAMIA",
-      date: "17 Apr 2025",
-    },
-  ];
+    if (section === "recents") {
+      update(recents, setRecents);
+    } else {
+      update(history, setHistory);
+    }
+  };
+
+  const filterBySearch = (list) =>
+    list.filter((item) =>
+      item.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
 
-    
+   
       <View style={styles.header}>
         <View style={styles.headerTop}>
           <TouchableOpacity onPress={() => router.back()}>
@@ -92,56 +115,77 @@ export default function Requests() {
         <Text style={styles.headerText}>REQUESTS</Text>
       </View>
 
-   
+    
       <View style={styles.searchBar}>
         <TextInput
           placeholder="Search..."
           placeholderTextColor={COLORS.grey}
           style={styles.input}
+          value={searchQuery}
+          onChangeText={setSearchQuery}
         />
       </View>
 
       <ScrollView style={styles.scroll}>
-     
+       
         <Text style={styles.sectionLabel}>RECENTS</Text>
-        {recents.map((req, index) => (
+        {filterBySearch(recents).map((req, index) => (
           <View key={index} style={styles.card}>
             <Text style={styles.itemText}>SERIAL ID: {req.serial}</Text>
             <Text style={styles.itemText}>ITEM: {req.name}</Text>
             <Text style={styles.itemText}>REQUESTED BY: {req.requester}</Text>
             <Text style={styles.itemText}>DUE DATE: {req.date}</Text>
-
+            {req.status && (
+              <Text style={[styles.itemText, { fontWeight: "bold" }]}>
+                STATUS: {req.status}
+              </Text>
+            )}
             <View style={styles.buttonRow}>
-              <TouchableOpacity style={[styles.actionButton, { backgroundColor: COLORS.success }]}>
+              <TouchableOpacity
+                style={[styles.actionButton, { backgroundColor: COLORS.success }]}
+                onPress={() => handleStatusChange("recents", index, "APPROVED")}
+              >
                 <Text style={styles.buttonText}>APPROVE</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.actionButton, { backgroundColor: "#FF3B3B" }]}>
+              <TouchableOpacity
+                style={[styles.actionButton, { backgroundColor: "#FF3B3B" }]}
+                onPress={() => handleStatusChange("recents", index, "DECLINED")}
+              >
                 <Text style={styles.buttonText}>DECLINE</Text>
               </TouchableOpacity>
             </View>
           </View>
         ))}
 
-       
+      
         <Text style={styles.sectionLabel}>REQUEST HISTORY</Text>
-        {history.map((req, index) => (
+        {filterBySearch(history).map((req, index) => (
           <View key={index} style={styles.card}>
             <Text style={styles.itemText}>SERIAL ID: {req.serial}</Text>
             <Text style={styles.itemText}>ITEM: {req.name}</Text>
             <Text style={styles.itemText}>REQUESTED BY: {req.requester}</Text>
             <Text style={styles.itemText}>DATE: {req.date}</Text>
-
+            {req.status && (
+              <Text style={[styles.itemText, { fontWeight: "bold" }]}>
+                STATUS: {req.status}
+              </Text>
+            )}
             <View style={styles.buttonRow}>
-              <TouchableOpacity style={[styles.actionButton, { backgroundColor: COLORS.success }]}>
+              <TouchableOpacity
+                style={[styles.actionButton, { backgroundColor: COLORS.success }]}
+                onPress={() => handleStatusChange("history", index, "APPROVED")}
+              >
                 <Text style={styles.buttonText}>APPROVE</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.actionButton, { backgroundColor: "#FF3B3B" }]}>
+              <TouchableOpacity
+                style={[styles.actionButton, { backgroundColor: "#FF3B3B" }]}
+                onPress={() => handleStatusChange("history", index, "DECLINED")}
+              >
                 <Text style={styles.buttonText}>DECLINE</Text>
               </TouchableOpacity>
             </View>
           </View>
         ))}
-
       </ScrollView>
     </View>
   );
@@ -240,11 +284,5 @@ const styles = StyleSheet.create({
     color: COLORS.white,
     fontWeight: "bold",
     fontSize: 12,
-  },
-
-  pageText: {
-    color: COLORS.white,
-    fontSize: 12,
-    fontStyle: "italic",
   },
 });
