@@ -84,7 +84,7 @@ export default function Onboarding() {
     });
 
     const handleExplore = () => {
-        router.replace("/home");
+        router.replace("/intro");
     };
 
     return (
