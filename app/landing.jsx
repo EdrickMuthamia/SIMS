@@ -2,24 +2,38 @@ import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions } from "react-native";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { Ionicons } from '@expo/vector-icons';
 
 const { height, width } = Dimensions.get("window");
 
-export default function Intro() {
+export default function Landing() {
     const router = useRouter();
 
-    const handleNext = () => {
-        router.push("/landing");
+    const handleBegin = () => {
+        router.replace("/home");
+    };
+
+    const handleBack = () => {
+        router.back();
     };
 
     return (
         <View style={styles.container}>
-            <StatusBar style="dark" />
+            <StatusBar style="light" />
+
+            {/* Back Arrow */}
+            <TouchableOpacity
+                style={styles.backButton}
+                onPress={handleBack}
+                activeOpacity={0.7}
+            >
+                <Ionicons name="arrow-back" size={28} color="#fff" />
+            </TouchableOpacity>
 
             {/* Card Image with Overlay */}
             <View style={styles.cardContainer}>
                 <Image
-                    source={require('../assets/organized.png')}
+                    source={require('../assets/landingpage.png')}
                     style={styles.cardImage}
                     resizeMode="contain"
                 />
@@ -33,13 +47,13 @@ export default function Intro() {
                 </View>
             </View>
 
-            {/* Next Button */}
+            {/* Begin Journey Button */}
             <TouchableOpacity
                 activeOpacity={0.8}
-                style={styles.nextButton}
-                onPress={handleNext}
+                style={styles.beginButton}
+                onPress={handleBegin}
             >
-                <Text style={styles.nextButtonText}>NEXT</Text>
+                <Text style={styles.beginButtonText}>BEGIN YOUR JOURNEY</Text>
             </TouchableOpacity>
         </View>
     );
@@ -51,14 +65,21 @@ const styles = StyleSheet.create({
         backgroundColor: "#1E1E1E",
         alignItems: "center",
         justifyContent: "space-between",
-        paddingVertical: height * 0.08,
+        paddingVertical: height * 0.06,
+    },
+    backButton: {
+        position: "absolute",
+        top: height * 0.06,
+        left: 20,
+        zIndex: 10,
+        padding: 8,
     },
     cardContainer: {
-        width: width * 1,
-        height: height * 0.75,
+        width: width * 1.1,
+        height: height * 0.7,
         alignItems: "center",
         justifyContent: "flex-end",
-        marginTop: height * 0.05,
+        marginTop: height * 0.08,
         position: "relative",
     },
     cardImage: {
@@ -69,14 +90,14 @@ const styles = StyleSheet.create({
     },
     overlayCard: {
         position: "absolute",
-        bottom: 70,
+        bottom: 50,
         backgroundColor: "#C4DAF3",
         borderRadius: 50,
         paddingVertical: 20,
         paddingHorizontal: 25,
-        width: "85%",
+        width: "80%",
         alignItems: "center",
-        elevation: 1,
+        elevation: 3,
         shadowColor: "#000",
         shadowOpacity: 0.15,
         shadowOffset: { width: 0, height: 4 },
@@ -95,9 +116,9 @@ const styles = StyleSheet.create({
         textAlign: "center",
         lineHeight: 20,
     },
-    nextButton: {
+    beginButton: {
         backgroundColor: "#FE005F",
-        paddingHorizontal: 60,
+        paddingHorizontal: 50,
         paddingVertical: 14,
         borderRadius: 30,
         elevation: 4,
@@ -107,7 +128,7 @@ const styles = StyleSheet.create({
         shadowRadius: 10,
         marginBottom: 20,
     },
-    nextButtonText: {
+    beginButtonText: {
         color: "#fff",
         fontWeight: "700",
         fontSize: 16,
