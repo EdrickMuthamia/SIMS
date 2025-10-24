@@ -1,83 +1,250 @@
-import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput } from "react-native";
+import React, { useEffect, useRef } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  TextInput,
+  StatusBar,
+  Image,
+  Animated,
+} from "react-native";
 import { useRouter } from "expo-router";
 import { COLORS } from "../constants/theme";
 
-
-
 export default function Requests() {
   const router = useRouter();
+  const pulseAnim = useRef(new Animated.Value(1)).current;
 
-  const requests = [
-    { serial: "0468P09", name: "LENOVO IDEAPAD", requester: "NAJMA SHAABAN", date: "2 Oct 2025", status: "APPROVED" },
-    { serial: "0469P10", name: "DELL G16 7630", requester: "WILLIAM KURIA", date: "1 May 2024", status: "DECLINE" },
-    { serial: "0470P11", name: "PREDATOR PRO M612", requester: "EDRICK MUTHAMA", date: "10 May 2024", status: "APPROVE" },
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulseAnim, {
+          toValue: 1.1,
+          duration: 600,
+          useNativeDriver: true,
+        }),
+        Animated.timing(pulseAnim, {
+          toValue: 1,
+          duration: 600,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  }, []);
+
+  const recents = [
+    {
+      serial: "0940F80",
+      name: "LENOVO IDEAPAD",
+      requester: "NAJMA SHAABAN",
+      date: "2 Oct 2025",
+    },
+  ];
+
+  const history = [
+    {
+      serial: "0940F80",
+      name: "DELL G16 7630",
+      requester: "WILLIAM KURIA",
+      date: "10 Mar 2024",
+    },
+    {
+      serial: "0940F80",
+      name: "PREDATOR PRO M612",
+      requester: "EDRICK MUTHAMIA",
+      date: "17 Apr 2025",
+    },
   ];
 
   return (
     <View style={styles.container}>
+      <StatusBar barStyle="light-content" />
+
+      {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()}>
-          <Text style={styles.backArrow}>←</Text>
-        </TouchableOpacity>
+        <View style={styles.headerTop}>
+          <TouchableOpacity onPress={() => router.back()}>
+            <Text style={styles.backArrow}>←</Text>
+          </TouchableOpacity>
+
+          <Image
+            source={require("../assets/icon.png")}
+            style={styles.logo}
+            resizeMode="contain"
+          />
+
+          <Animated.View
+            style={[
+              styles.logoCircle,
+              { transform: [{ scale: pulseAnim }] },
+            ]}
+          >
+            <Image
+              source={require("../assets/splash-icon.png")}
+              style={styles.headerIcon}
+              resizeMode="contain"
+            />
+          </Animated.View>
+        </View>
+
         <Text style={styles.headerText}>REQUESTS</Text>
       </View>
 
+      {/* Search Bar */}
       <View style={styles.searchBar}>
-        <TextInput placeholder="Search..." placeholderTextColor={COLORS.grey} style={styles.input} />
+        <TextInput
+          placeholder="Search..."
+          placeholderTextColor={COLORS.grey}
+          style={styles.input}
+        />
       </View>
 
       <ScrollView style={styles.scroll}>
-        {requests.map((req, index) => (
+        {/* Recents Section */}
+        <Text style={styles.sectionLabel}>RECENTS</Text>
+        {recents.map((req, index) => (
           <View key={index} style={styles.card}>
             <Text style={styles.itemText}>SERIAL ID: {req.serial}</Text>
-            <Text style={styles.itemText}>DEVICE: {req.name}</Text>
+            <Text style={styles.itemText}>ITEM: {req.name}</Text>
             <Text style={styles.itemText}>REQUESTED BY: {req.requester}</Text>
-            <Text style={styles.itemText}>DATE: {req.date}</Text>
+            <Text style={styles.itemText}>DUE DATE: {req.date}</Text>
 
             <View style={styles.buttonRow}>
-              <TouchableOpacity
-                style={[styles.statusButton, { backgroundColor: req.status === "APPROVED" ? COLORS.success : COLORS.danger }]}
-              >
-                <Text style={styles.statusText}>{req.status}</Text>
+              <TouchableOpacity style={[styles.actionButton, { backgroundColor: COLORS.success }]}>
+                <Text style={styles.buttonText}>APPROVE</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.actionButton, { backgroundColor: "#FF3B3B" }]}>
+                <Text style={styles.buttonText}>DECLINE</Text>
               </TouchableOpacity>
             </View>
           </View>
         ))}
+
+        {/* History Section */}
+        <Text style={styles.sectionLabel}>REQUEST HISTORY</Text>
+        {history.map((req, index) => (
+          <View key={index} style={styles.card}>
+            <Text style={styles.itemText}>SERIAL ID: {req.serial}</Text>
+            <Text style={styles.itemText}>ITEM: {req.name}</Text>
+            <Text style={styles.itemText}>REQUESTED BY: {req.requester}</Text>
+            <Text style={styles.itemText}>DATE: {req.date}</Text>
+
+            <View style={styles.buttonRow}>
+              <TouchableOpacity style={[styles.actionButton, { backgroundColor: COLORS.success }]}>
+                <Text style={styles.buttonText}>APPROVE</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.actionButton, { backgroundColor: "#FF3B3B" }]}>
+                <Text style={styles.buttonText}>DECLINE</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        ))}
+
       </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.black, padding: 15 },
+  container: { flex: 1, backgroundColor: COLORS.black },
   header: {
     backgroundColor: COLORS.primary,
-    flexDirection: "row",
+    borderRadius: 20,
+    paddingTop: 40,
+    paddingBottom: 30,
+    paddingHorizontal: 20,
     alignItems: "center",
-    padding: 15,
-    borderBottomLeftRadius: 25,
-    borderBottomRightRadius: 25,
   },
-  headerText: { color: COLORS.white, fontSize: 18, fontWeight: "bold", marginLeft: 10 },
-  backArrow: { color: COLORS.white, fontSize: 20 },
-  searchBar: { marginVertical: 15, alignItems: "center" },
+  headerTop: {
+    width: "90%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  backArrow: {
+    fontSize: 22,
+    color: COLORS.white,
+    fontWeight: "bold",
+  },
+  logo: {
+    width: 50,
+    height: 50,
+  },
+  logoCircle: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: "rgba(216, 161, 180, 0.3)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  headerIcon: {
+    width: 30,
+    height: 30,
+  },
+  headerText: {
+    marginTop: 15,
+    fontSize: 18,
+    color: COLORS.white,
+    fontWeight: "bold",
+    textTransform: "uppercase",
+  },
+  searchBar: {
+    marginVertical: 15,
+    alignItems: "center",
+  },
   input: {
     backgroundColor: COLORS.white,
     borderRadius: 10,
     padding: 10,
     width: "90%",
     color: COLORS.black,
+    fontWeight: "600",
   },
-  scroll: { marginTop: 10 },
+  scroll: { paddingHorizontal: 15 },
+  sectionLabel: {
+    color: "#FFD700",
+    fontSize: 12,
+    fontWeight: "bold",
+    textTransform: "uppercase",
+    marginBottom: 10,
+    marginTop: 10,
+  },
   card: {
-    backgroundColor: COLORS.lightGrey,
+    backgroundColor: "rgba(255,255,255,0.08)",
     padding: 20,
     borderRadius: 15,
     marginBottom: 15,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
   },
-  itemText: { color: COLORS.black, fontSize: 14, marginVertical: 2 },
-  buttonRow: { flexDirection: "row", justifyContent: "flex-end", marginTop: 10 },
-  statusButton: { paddingVertical: 6, paddingHorizontal: 15, borderRadius: 8 },
-  statusText: { color: COLORS.white, fontWeight: "bold" },
+  itemText: {
+    color: COLORS.white,
+    fontSize: 14,
+    marginVertical: 2,
+  },
+  buttonRow: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    marginTop: 12,
+    gap: 10,
+  },
+  actionButton: {
+    paddingVertical: 6,
+    paddingHorizontal: 15,
+    borderRadius: 8,
+  },
+  buttonText: {
+    color: COLORS.white,
+    fontWeight: "bold",
+    fontSize: 12,
+  },
+
+  pageText: {
+    color: COLORS.white,
+    fontSize: 12,
+    fontStyle: "italic",
+  },
 });
