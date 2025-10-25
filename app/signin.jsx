@@ -1,5 +1,17 @@
 import React, { useState, useEffect } from "react";
-import {View, Text, StyleSheet,TouchableOpacity,Image,TextInput,KeyboardAvoidingView,Platform,ScrollView,Dimensions,Alert} from "react-native";
+import {
+    View,
+    Text,
+    StyleSheet,
+    TouchableOpacity,
+    Image,
+    TextInput,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView,
+    Dimensions,
+    Alert
+} from "react-native";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { Ionicons } from '@expo/vector-icons';
@@ -81,7 +93,7 @@ export default function SignIn() {
             await AsyncStorage.setItem('isLoggedIn', 'true');
 
             // Navigate to home
-            router.replace("/home");
+            router.replace("/loading");
         } catch (error) {
             Alert.alert("Error", "Something went wrong. Please try again.");
         }
@@ -89,7 +101,7 @@ export default function SignIn() {
 
     const handleSignUp = () => {
         // Will navigate to sign up page later
-        Alert.alert("Coming Soon", "Sign up feature will be available soon!");
+        router.push("/signup");
     };
 
     return (
@@ -182,23 +194,23 @@ export default function SignIn() {
                             <Text style={styles.forgotPassword}>Forgot Password?</Text>
                         </TouchableOpacity>
                     </View>
-
-                    {/* Login Button */}
-                    <TouchableOpacity
-                        style={styles.loginButton}
-                        onPress={handleLogin}
-                        activeOpacity={0.8}
-                    >
-                        <Text style={styles.loginButtonText}>LOGIN</Text>
-                    </TouchableOpacity>
-
-                    {/* Sign Up Link */}
-                    <TouchableOpacity onPress={handleSignUp} style={styles.signUpContainer}>
-                        <Text style={styles.signUpText}>
-                            Don't have an account? <Text style={styles.signUpLink}>Sign Up</Text>
-                        </Text>
-                    </TouchableOpacity>
                 </View>
+
+                {/* Login Button - Now outside formContainer */}
+                <TouchableOpacity
+                    style={styles.loginButton}
+                    onPress={handleLogin}
+                    activeOpacity={0.8}
+                >
+                    <Text style={styles.loginButtonText}>LOGIN</Text>
+                </TouchableOpacity>
+
+                {/* Sign Up Link */}
+                <TouchableOpacity onPress={handleSignUp} style={styles.signUpContainer}>
+                    <Text style={styles.signUpText}>
+                        Don't have an account? <Text style={styles.signUpLink}>Sign Up</Text>
+                    </Text>
+                </TouchableOpacity>
             </ScrollView>
         </KeyboardAvoidingView>
     );
@@ -310,7 +322,7 @@ const styles = StyleSheet.create({
     loginButton: {
         backgroundColor: "#FE005F",
         borderRadius: 25,
-        paddingHorizontal: 3,
+        paddingHorizontal: 80,      // Now this will work!
         paddingVertical: 15,
         alignItems: "center",
         elevation: 4,
@@ -318,6 +330,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.3,
         shadowOffset: { width: 0, height: 6 },
         shadowRadius: 10,
+        marginTop: 70,
     },
     loginButtonText: {
         color: "#fff",
@@ -326,7 +339,7 @@ const styles = StyleSheet.create({
         letterSpacing: 1,
     },
     signUpContainer: {
-        marginTop: 20,
+        marginTop: 50,
         alignItems: "center",
     },
     signUpText: {
