@@ -64,7 +64,19 @@ export default function SignIn() {
             return;
         }
 
-        
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        if (password.length < 8) {
+            Alert.alert("Error", "Password must be atleast 8 charaacters long");
+            return;
+        }
+
+        if (!passwordRegex.test(password)){
+            Alert.alert(
+            "Weak Password",
+            "Password must contain:\n• At least 8 characters\n• 1 uppercase letter\n• 1 lowercase letter\n• 1 number\n• 1 special character (@$!%*?&)"
+        );
+            return;
+        }
 
         // Remember user if checkbox is checked
         try {
