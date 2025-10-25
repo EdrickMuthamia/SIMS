@@ -10,7 +10,7 @@ export default function Landing() {
     const router = useRouter();
 
     const handleBegin = () => {
-        router.replace("/home");
+        router.push("/signin");
     };
 
     const handleBack = () => {
