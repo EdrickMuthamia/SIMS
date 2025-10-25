@@ -1,17 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-    View,
-    Text,
-    StyleSheet,
-    TouchableOpacity,
-    Image,
-    TextInput,
-    KeyboardAvoidingView,
-    Platform,
-    ScrollView,
-    Dimensions,
-    Alert
-} from "react-native";
+import {View, Text, StyleSheet,TouchableOpacity,Image,TextInput,KeyboardAvoidingView,Platform,ScrollView,Dimensions,Alert} from "react-native";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { Ionicons } from '@expo/vector-icons';
@@ -70,11 +58,11 @@ export default function SignIn() {
             return;
         }
 
-        if (!passwordRegex.test(password)){
+        if (!passwordRegex.test(password)) {
             Alert.alert(
-            "Weak Password",
-            "Password must contain:\n• At least 8 characters\n• 1 uppercase letter\n• 1 lowercase letter\n• 1 number\n• 1 special character (@$!%*?&)"
-        );
+                "Weak Password",
+                "Password must contain:\n• At least 8 characters\n• 1 uppercase letter\n• 1 lowercase letter\n• 1 number\n• 1 special character (@$!%*?&)"
+            );
             return;
         }
 
@@ -322,7 +310,8 @@ const styles = StyleSheet.create({
     loginButton: {
         backgroundColor: "#FE005F",
         borderRadius: 25,
-        paddingVertical: 14,
+        paddingHorizontal: 3,
+        paddingVertical: 15,
         alignItems: "center",
         elevation: 4,
         shadowColor: "#FE005F",
