@@ -57,21 +57,18 @@ const ItemsScreen = () => {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.backButton}
-          onPress={() => router.push('/scan')}
+          onPress={() => router.push("/scan")}
         >
           <Text style={styles.backArrow}>←</Text>
         </TouchableOpacity>
         <Image
-          source={require("../assets/splash-icon.png")}
+          source={require("../assets/icon.png")}
           style={styles.headerIcon}
         />
         <Text style={styles.headerTitle}>ITEMS</Text>
-        <Image
-          source={require("../assets/icon.png")}
-          style={styles.rightIcon}
-        />
+        <Image source={require("../assets/splash-icon.png")} style={styles.rightIcon} />
       </View>
 
       {/* Search Bar */}
@@ -118,7 +115,7 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: "#E91E63",
-    paddingVertical: 20,
+    paddingVertical: 50,
     borderBottomLeftRadius: 35,
     borderBottomRightRadius: 35,
     alignItems: "center",
@@ -126,33 +123,41 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   headerIcon: {
-    width: 40,
-    height: 40,
+    width: 70,
+    height: 80,
     position: "absolute",
-    left: 90,
-    top: 22,
+    left: 170,
+    top: 10,
+    
   },
   rightIcon: {
     width: 35,
     height: 35,
     position: "absolute",
     right: 25,
-    top: 22,
-    backgroundColor: "#684268ff",
+    top: 39,
+    
   },
   backButton: {
     position: "absolute",
     left: 15,
     top: 18,
+    
+
   },
   backArrow: {
-    color: "#fff",
-    fontSize: 26,
+    color: "#f1eaeaff",
+    fontSize: 45,
+    fontWeight: "bold",
+    
+
   },
   headerTitle: {
     color: "#fff",
     fontSize: 18,
     fontWeight: "bold",
+    top: 40,
+    left: 10,
   },
   searchContainer: {
     flexDirection: "row",
