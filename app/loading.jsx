@@ -31,12 +31,12 @@ export default function Loading() {
 
         // Phase 1: "GETTING THINGS READY..." (0-2s)
         const timer1 = setTimeout(() => {
-            fadeTransition(() => setCurrentPhase(2));
+            setCurrentPhase(2);
         }, 2000);
 
         // Phase 2: "JUST A MINUTE OR TWO..." (2s-4s)
         const timer2 = setTimeout(() => {
-            fadeTransition(() => setCurrentPhase(3));
+            setCurrentPhase(3);
         }, 4000);
 
         // Phase 3: "READY !" (4s-7s, then navigate)
@@ -51,7 +51,7 @@ export default function Loading() {
         };
     }, []);
 
-    const fadeTransition = (callback) => {
+    useEffect ((callback) => {
         Animated.sequence([
             Animated.timing(fadeAnim, {
                 toValue: 0,
@@ -63,8 +63,9 @@ export default function Loading() {
                 duration: 250,
                 useNativeDriver: true,
             }),
-        ]).start(() => callback());
-    };
+        ]).start();
+    }, [currentPhase]);    
+      
 
     const spin = spinValue.interpolate({
         inputRange: [0, 1],
@@ -93,11 +94,9 @@ export default function Loading() {
                 <Svg width={200} height={200} viewBox="0 0 200 200">
                     <Defs>
                         <LinearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <Stop offset="0%" stopColor="#FF6B6B" />
-                            <Stop offset="25%" stopColor="#FFA500" />
-                            <Stop offset="50%" stopColor="#FFD700" />
-                            <Stop offset="75%" stopColor="#4ECDC4" />
-                            <Stop offset="100%" stopColor="#4A90E2" />
+                            <Stop offset="12%" stopColor="#FE005F" />
+                            <Stop offset="50%" stopColor="#FEB000" />
+                            <Stop offset="83%" stopColor="#0080FC" />
                         </LinearGradient>
                     </Defs>
                     <Circle
@@ -108,7 +107,7 @@ export default function Loading() {
                         strokeWidth="8"
                         fill="none"
                         strokeLinecap="round"
-                        strokeDasharray="440 60"
+                        strokeDasharray="440 20"
                     />
                 </Svg>
             </Animated.View>
