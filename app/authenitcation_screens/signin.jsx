@@ -93,7 +93,7 @@ export default function SignIn() {
             await AsyncStorage.setItem('isLoggedIn', 'true');
 
             // Navigate to home
-            router.replace("/loading");
+            router.replace("/welcome_screens/loading");
         } catch (error) {
             Alert.alert("Error", "Something went wrong. Please try again.");
         }
@@ -101,14 +101,11 @@ export default function SignIn() {
 
     const handleSignUp = () => {
         // Will navigate to sign up page later
-        router.push("/signup");
+        router.push("/authenitcation_screens/signup");
     };
 
     return (
-        <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-            style={styles.container}
-        >
+        <View style={styles.container}>
             <StatusBar style="light" />
             <ScrollView
                 contentContainerStyle={styles.scrollContent}
@@ -126,7 +123,7 @@ export default function SignIn() {
 
                 {/* Logo */}
                 <Image
-                    source={require('../assets/logo.png')}
+                    source={require('../../assets/logo.png')}
                     style={styles.logo}
                     resizeMode="contain"
                 />
@@ -212,7 +209,7 @@ export default function SignIn() {
                     </Text>
                 </TouchableOpacity>
             </ScrollView>
-        </KeyboardAvoidingView>
+        </View>
     );
 }
 

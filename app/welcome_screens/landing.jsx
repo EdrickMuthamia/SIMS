@@ -10,7 +10,7 @@ export default function Landing() {
     const router = useRouter();
 
     const handleBegin = () => {
-        router.push("/signin");
+        router.push("/authenitcation_screens/signin");
     };
 
     const handleBack = () => {
@@ -33,7 +33,7 @@ export default function Landing() {
             {/* Card Image with Overlay */}
             <View style={styles.cardContainer}>
                 <Image
-                    source={require('../assets/landingpage.png')}
+                    source={require('../../assets/landingpage.png')}
                     style={styles.cardImage}
                     resizeMode="contain"
                 />

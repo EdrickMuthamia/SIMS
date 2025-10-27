@@ -9,7 +9,7 @@ export default function Intro() {
     const router = useRouter();
 
     const handleNext = () => {
-        router.push("/landing");
+        router.push("/welcome_screens/landing");
     };
 
     return (
@@ -19,7 +19,7 @@ export default function Intro() {
             {/* Card Image with Overlay */}
             <View style={styles.cardContainer}>
                 <Image
-                    source={require('../assets/organized.png')}
+                    source={require('../../assets/organized.png')}
                     style={styles.cardImage}
                     resizeMode="contain"
                 />

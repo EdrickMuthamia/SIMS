@@ -46,17 +46,14 @@ export default function SignUp() {
             await AsyncStorage.setItem('organizationLocation', organizationLocation.trim());
             await AsyncStorage.setItem('setupComplete', 'true');
             // Navigate to upload page
-            router.push("/upload");
+            router.push("/authenitcation_screens/upload");
         } catch (error) {
             Alert.alert("Error", "Something went wrong. Please try again.");
         }
     };
 
     return (
-        <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-            style={styles.container}
-        >
+        <View style={styles.container}>
             <StatusBar style="light" />
             <ScrollView
                 contentContainerStyle={styles.scrollContent}
@@ -74,7 +71,7 @@ export default function SignUp() {
 
                 {/* Logo */}
                 <Image
-                    source={require('../assets/logo.png')}
+                    source={require('../../assets/logo.png')}
                     style={styles.logo}
                     resizeMode="contain"
                 />
@@ -116,7 +113,7 @@ export default function SignUp() {
                     <Text style={styles.continueButtonText}>CONTINUE WITH SETUP</Text>
                 </TouchableOpacity>
             </ScrollView>
-        </KeyboardAvoidingView>
+        </View>
     );
 }
 

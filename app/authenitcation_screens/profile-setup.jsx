@@ -52,7 +52,7 @@ export default function ProfileSetup() {
             await AsyncStorage.setItem('organizationBio', bio.trim());
 
             // Navigate to password setup (we'll create this next)
-            router.push("/password-setup");
+            router.push("authenitcation_screens/password-setup");
         } catch (error) {
             Alert.alert("Error", "Something went wrong. Please try again.");
         }
@@ -61,10 +61,7 @@ export default function ProfileSetup() {
     const showAlmostDone = name.trim().length > 0;
 
     return (
-        <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-            style={styles.container}
-        >
+        <View style={styles.container}>
             <StatusBar style="light" />
             <ScrollView
                 contentContainerStyle={styles.scrollContent}
@@ -82,7 +79,7 @@ export default function ProfileSetup() {
 
                 {/* Logo */}
                 <Image
-                    source={require('../assets/logo.png')}
+                    source={require('../../assets/logo.png')}
                     style={styles.logo}
                     resizeMode="contain"
                 />
@@ -138,7 +135,7 @@ export default function ProfileSetup() {
                     <Text style={styles.passwordButtonText}>SET PASSWORD</Text>
                 </TouchableOpacity>
             </ScrollView>
-        </KeyboardAvoidingView>
+        </View>
     );
 }
 

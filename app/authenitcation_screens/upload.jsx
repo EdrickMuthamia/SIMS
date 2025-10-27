@@ -102,7 +102,7 @@ export default function Upload() {
 
         try{
             await AsyncStorage.setItem('organizationPhoto', selectedImage);
-            router.push("/profile-setup");
+            router.push("/authenitcation_screens/profile-setup");
         } catch (error) {
             Alert.alert("Error", "Something went wrong. Please try again.");
         }
@@ -123,7 +123,7 @@ export default function Upload() {
 
             {/* Logo */}
             <Image
-                source={require('../assets/logo.png')}
+                source={require('../../assets/logo.png')}
                 style={styles.logo}
                 resizeMode="contain"
             />

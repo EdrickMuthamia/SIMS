@@ -81,7 +81,7 @@ export default function ProfileSetup() {
                 {
                     text: "OK",
                     onPress: () => {
-                        router.replace("/loading");
+                        router.replace("/welcome_screens/loading");
                     }
                 }
             ]);
@@ -91,10 +91,7 @@ export default function ProfileSetup() {
     };
 
     return (
-        <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-            style={styles.container}
-        >
+        <View style={styles.container}>
             <StatusBar style="light" />
             <ScrollView
                 contentContainerStyle={styles.scrollContent}
@@ -112,7 +109,7 @@ export default function ProfileSetup() {
 
                 {/* Logo */}
                 <Image
-                    source={require('../assets/logo.png')}
+                    source={require('../../assets/logo.png')}
                     style={styles.logo}
                     resizeMode="contain"
                 />
@@ -195,7 +192,7 @@ export default function ProfileSetup() {
                     <Text style={styles.doneButtonText}>DONE</Text>
                 </TouchableOpacity>
             </ScrollView>
-        </KeyboardAvoidingView>
+        </View>
     );
 }
 

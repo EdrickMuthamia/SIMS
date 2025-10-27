@@ -84,7 +84,7 @@ export default function Onboarding() {
     });
 
     const handleExplore = () => {
-        router.replace("/intro");
+        router.replace("/welcome_screens/intro");
     };
 
     return (
@@ -94,7 +94,7 @@ export default function Onboarding() {
             {/* SPLASH PAGE */}
             <Animated.View style={[styles.splash, { opacity: splashOpacity, zIndex: showLanding ? 0 : 1 }]}>
                 <Image
-                    source={require('../../assets/logo.png')}
+                    source={require('../assets/logo.png')}
                     style={styles.logoImage}
                     resizeMode="contain"
                 />
@@ -114,7 +114,7 @@ export default function Onboarding() {
                 {/* Center Block (Logo and Description, centered vertically) */}
                 <View style={styles.centerBlock}>
                     <Image
-                        source={require('../../assets/logo.png')}
+                        source={require('../assets/logo.png')}
                         style={styles.logoImage}
                         resizeMode="contain"
                     />
