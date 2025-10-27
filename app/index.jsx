@@ -100,7 +100,6 @@ export default function OrganizationDetails() {
               </Animated.View>
             </TouchableOpacity>
 
-            {/* Permanent company logo */}
             <Image
               source={require("../assets/splash-icon.png")}
               style={styles.logo}
