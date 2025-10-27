@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
     },
     logoImage: {
-        width: 350,
+        width: 300,
         height: 350,
     },
     spinnerContainer: {
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
     },
     descriptionCentered: {
         color: "#ccc",
-        fontSize: 24.5,
+        fontSize: 20,
         textAlign: "center",
         marginTop: 30, // Space between logo and description
         lineHeight: 22,
