@@ -59,7 +59,7 @@ const ItemsScreen = () => {
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backButton}
-          onPress={() => router.push("/scan")}
+          onPress={() => router.push("/blank")}
         >
           <Text style={styles.backArrow}>←</Text>
         </TouchableOpacity>
@@ -93,13 +93,24 @@ const ItemsScreen = () => {
         data={filteredData}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <View style={styles.itemCard}>
+          <TouchableOpacity 
+            style={styles.itemCard}
+            onPress={() => router.push({
+              pathname: '/item-details',
+              params: {
+                id: item.id,
+                name: item.name,
+                details: item.details,
+                image: item.image
+              }
+            })}
+          >
             <Image source={{ uri: item.image }} style={styles.itemImage} />
             <View style={styles.itemText}>
               <Text style={styles.itemName}>{item.name}</Text>
               <Text style={styles.itemDetails}>{item.details}</Text>
             </View>
-          </View>
+          </TouchableOpacity>
         )}
         contentContainerStyle={{ paddingBottom: 20 }}
       />
