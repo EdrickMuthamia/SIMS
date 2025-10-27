@@ -8,12 +8,7 @@ const Home = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>SIMS</Text>
-      <TouchableOpacity 
-        style={styles.button} 
-        onPress={() => router.push('/scan')}
-      >
-        <Text style={styles.buttonText}>Go to Scanner</Text>
-      </TouchableOpacity>
+
       <TouchableOpacity 
         style={styles.button} 
         onPress={() => router.push('/items')}
