@@ -69,7 +69,7 @@ export default function OrganizationDetails() {
         <View style={styles.header}>
           <View style={styles.headerTop}>
           
-            <TouchableOpacity style={styles.menuIcon} onPress={() => router.push("/menu")}>
+            <TouchableOpacity style={styles.menuIcon} onPress={() => router.push("menu_screens/menu")}>
               <Text style={styles.menuLine}>☰</Text>
             </TouchableOpacity>
 
