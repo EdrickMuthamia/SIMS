@@ -1,14 +1,5 @@
 import { StyleSheet } from 'react-native';
-
-const colors = {
-  background: '#121212',
-  primary: '#FF3B3B',
-  accent: '#FFD700',
-  text: '#FFFFFF',
-  muted: '#AAAAAA',
-  surface: '#1E1E1E',
-  helpButton: '#2C2C2C',
-};
+import colors from './colors';
 
 export const globalStyles = StyleSheet.create({
   container: {
@@ -18,8 +9,8 @@ export const globalStyles = StyleSheet.create({
 
   headerContainer: {
     backgroundColor: colors.primary,
-    borderBottomLeftRadius: 50,
-    borderBottomRightRadius: 50,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
     paddingTop: 50,
@@ -58,7 +49,7 @@ export const globalStyles = StyleSheet.create({
     backgroundColor: colors.surface,
     paddingVertical: 16,
     paddingHorizontal: 20,
-    borderRadius: 30,
+    borderRadius: 20,
     marginBottom: 18,
     shadowColor: '#000',
     shadowOpacity: 0.25,
@@ -81,7 +72,7 @@ export const globalStyles = StyleSheet.create({
   helpButton: {
     alignSelf: 'center',
     backgroundColor: colors.helpButton,
-    borderRadius: 25,
+    borderRadius: 20,
     paddingVertical: 12,
     paddingHorizontal: 50,
     marginTop: 15,
@@ -98,5 +89,3 @@ export const globalStyles = StyleSheet.create({
     fontWeight: '500',
   },
 });
-
-export default colors;

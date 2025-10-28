@@ -4,17 +4,6 @@ import { settingsOptions } from '../data/settingsData';
 import colors from '../styles/colors';
 
 export default function SettingsScreen({ navigation }) {
-  const renderItem = ({ item }) => (
-    <TouchableOpacity
-      style={styles.option}
-      onPress={() => item.screen && navigation.navigate(item.screen)}
-    >
-      <Image source={item.icon} style={styles.icon} />
-      <Text style={styles.label}>{item.label}</Text>
-      {item.hasDot && <View style={styles.dot} />}
-    </TouchableOpacity>
-  );
-
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -23,7 +12,16 @@ export default function SettingsScreen({ navigation }) {
       <FlatList
         data={settingsOptions}
         keyExtractor={(item) => item.id}
-        renderItem={renderItem}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={styles.option}
+            onPress={() => item.screen && navigation.navigate(item.screen)}
+          >
+            <Image source={item.icon} style={styles.icon} />
+            <Text style={styles.label}>{item.label}</Text>
+            {item.hasDot && <View style={styles.dot} />}
+          </TouchableOpacity>
+        )}
         contentContainerStyle={styles.list}
       />
     </View>
@@ -47,14 +45,14 @@ const styles = StyleSheet.create({
   option: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#000000',
+    backgroundColor: colors.surface,
     padding: 15,
     borderRadius: 10,
     marginBottom: 15,
     position: 'relative',
   },
-  icon: { width: 24, height: 24, marginRight: 15, tintColor: '#FFFFFF' },
-  label: { color: '#FFFFFF', fontSize: 16 },
+  icon: { width: 24, height: 24, marginRight: 15, tintColor: colors.text },
+  label: { color: colors.text, fontSize: 16 },
   dot: {
     width: 8,
     height: 8,

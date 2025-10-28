@@ -4,34 +4,14 @@ import ToggleSwitch from '../components/ToggleSwitch';
 import colors from '../styles/colors';
 
 const securityOptions = [
-  {
-    id: 'changePassword',
-    label: 'Change Password',
-    icon: require('../../assets/icons/changepassword.png'),
-  },
-  {
-    id: 'twoFactor',
-    label: 'Two-Factor Authentication',
-    icon: require('../../assets/icons/twofactorauthentication.png'),
-  },
+  { id: 'changePassword', label: 'Change Password', icon: require('../../assets/icons/changepassword.png') },
+  { id: 'twoFactor', label: 'Two-Factor Authentication', icon: require('../../assets/icons/twofactorauthentication.png') },
 ];
 
 const devices = [
-  {
-    id: 'iphone',
-    name: 'iPhone 16 Pro Max',
-    icon: require('../../assets/icons/iphone16promax.png'),
-  },
-  {
-    id: 'pixel',
-    name: 'Google Pixel 9a',
-    icon: require('../../assets/icons/Google Pixel 9a.png'),
-  },
-  {
-    id: 'ipad',
-    name: 'iPad mini',
-    icon: require('../../assets/icons/iPad mini.png'),
-  },
+  { id: 'iphone', name: 'iPhone 16 Pro Max', icon: require('../../assets/icons/iphone16promax.png') },
+  { id: 'pixel', name: 'Google Pixel 9a', icon: require('../../assets/icons/Google Pixel 9a.png') },
+  { id: 'ipad', name: 'iPad mini', icon: require('../../assets/icons/iPad mini.png') },
 ];
 
 export default function SecurityScreen() {
@@ -50,7 +30,6 @@ export default function SecurityScreen() {
       Alert.alert('Error', 'Password must be at least 8 characters long');
       return;
     }
-    // Here you would typically call an API to change the password
     Alert.alert('Success', 'Password changed successfully');
     setChangePasswordModalVisible(false);
     setCurrentPassword('');
@@ -59,14 +38,10 @@ export default function SecurityScreen() {
   };
 
   const handleLogout = () => {
-    Alert.alert(
-      'Logout',
-      'Are you sure you want to log out from all devices?',
-      [
-        { text: 'Cancel', onPress: () => console.log('Logout cancelled'), style: 'cancel' },
-        { text: 'Logout', onPress: () => console.log('Logged out from all devices'), style: 'destructive' },
-      ]
-    );
+    Alert.alert('Logout', 'Are you sure you want to log out from all devices?', [
+      { text: 'Cancel', style: 'cancel' },
+      { text: 'Logout', style: 'destructive' },
+    ]);
   };
 
   return (
@@ -74,32 +49,23 @@ export default function SecurityScreen() {
       <View style={styles.header}>
         <Text style={styles.headerText}>SECURITY SETTINGS</Text>
       </View>
-
       <View style={styles.section}>
         {securityOptions.map((item) => (
           <TouchableOpacity
             key={item.id}
             style={styles.row}
-            onPress={() => {
-              if (item.id === 'changePassword') {
-                setChangePasswordModalVisible(true);
-              }
-            }}
+            onPress={() => item.id === 'changePassword' && setChangePasswordModalVisible(true)}
           >
             <Image source={item.icon} style={styles.icon} />
             <Text style={styles.label}>{item.label}</Text>
-            {item.id === 'changePassword' && (
-              <Image source={require('../../assets/icons/Updates.png')} style={styles.arrowIcon} />
-            )}
+            {item.id === 'changePassword' && <Image source={require('../../assets/icons/Updates.png')} style={styles.arrowIcon} />}
           </TouchableOpacity>
         ))}
-
         <View style={styles.option}>
           <Text style={styles.optionText}>Two-Factor Authentication</Text>
           <ToggleSwitch value={twoFactorEnabled} onValueChange={setTwoFactorEnabled} />
         </View>
       </View>
-
       <Text style={styles.subHeader}>MY DEVICES</Text>
       <FlatList
         data={devices}
@@ -111,21 +77,13 @@ export default function SecurityScreen() {
           </View>
         )}
       />
-
       <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
         <Text style={styles.logoutText}>Logout from all devices</Text>
       </TouchableOpacity>
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={changePasswordModalVisible}
-        onRequestClose={() => setChangePasswordModalVisible(false)}
-      >
+      <Modal animationType="slide" transparent visible={changePasswordModalVisible} onRequestClose={() => setChangePasswordModalVisible(false)}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Change Password</Text>
-
             <TextInput
               style={styles.input}
               placeholder="Current Password"
@@ -134,7 +92,6 @@ export default function SecurityScreen() {
               value={currentPassword}
               onChangeText={setCurrentPassword}
             />
-
             <TextInput
               style={styles.input}
               placeholder="New Password"
@@ -143,7 +100,6 @@ export default function SecurityScreen() {
               value={newPassword}
               onChangeText={setNewPassword}
             />
-
             <TextInput
               style={styles.input}
               placeholder="Confirm New Password"
@@ -152,12 +108,8 @@ export default function SecurityScreen() {
               value={confirmPassword}
               onChangeText={setConfirmPassword}
             />
-
             <View style={styles.modalButtons}>
-              <TouchableOpacity
-                style={styles.cancelButton}
-                onPress={() => setChangePasswordModalVisible(false)}
-              >
+              <TouchableOpacity style={styles.cancelButton} onPress={() => setChangePasswordModalVisible(false)}>
                 <Text style={styles.cancelText}>Cancel</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.saveButton} onPress={handleChangePassword}>
@@ -196,7 +148,7 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1e1e1e',
+    backgroundColor: colors.surface,
     padding: 15,
     borderRadius: 10,
     marginBottom: 10,
@@ -218,7 +170,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#000',
+    backgroundColor: colors.surface,
     padding: 15,
     borderRadius: 10,
     marginBottom: 15,
@@ -246,7 +198,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   input: {
-    backgroundColor: '#000',
+    backgroundColor: colors.surface,
     color: colors.text,
     padding: 15,
     borderRadius: 10,

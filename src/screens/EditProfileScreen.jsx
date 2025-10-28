@@ -2,20 +2,15 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput, ScrollView, Alert } from 'react-native';
 import colors from '../styles/colors';
 
-export default function EditProfileScreen({ navigation }) {
-  const initialName = 'John Doe';
-  const initialEmail = 'john.doe@example.com';
-  const initialPhone = '+1234567890';
-
-  const [name, setName] = useState(initialName);
-  const [email, setEmail] = useState(initialEmail);
-  const [phone, setPhone] = useState(initialPhone);
+export default function EditProfileScreen() {
+  const [name, setName] = useState('John Doe');
+  const [email, setEmail] = useState('john.doe@example.com');
+  const [phone, setPhone] = useState('+1234567890');
 
   const handleSave = () => {
-    if (name === initialName && email === initialEmail && phone === initialPhone) {
+    if (name === 'John Doe' && email === 'john.doe@example.com' && phone === '+1234567890') {
       Alert.alert('Edit Profile First');
     } else {
-      // Here you could save to state or API
       Alert.alert('Edit Profile Complete');
     }
   };
@@ -26,7 +21,6 @@ export default function EditProfileScreen({ navigation }) {
         <Text style={styles.headerText}>EDIT PROFILE</Text>
         <Image source={require('../../assets/icons/user.png')} style={styles.avatar} />
       </View>
-
       <View style={styles.form}>
         <Text style={styles.label}>Name</Text>
         <TextInput
@@ -36,7 +30,6 @@ export default function EditProfileScreen({ navigation }) {
           placeholder="Enter your name"
           placeholderTextColor="#888"
         />
-
         <Text style={styles.label}>Email</Text>
         <TextInput
           style={styles.input}
@@ -46,7 +39,6 @@ export default function EditProfileScreen({ navigation }) {
           placeholderTextColor="#888"
           keyboardType="email-address"
         />
-
         <Text style={styles.label}>Phone</Text>
         <TextInput
           style={styles.input}
@@ -56,7 +48,6 @@ export default function EditProfileScreen({ navigation }) {
           placeholderTextColor="#888"
           keyboardType="phone-pad"
         />
-
         <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
           <Text style={styles.saveText}>SAVE CHANGES</Text>
         </TouchableOpacity>
@@ -83,7 +74,7 @@ const styles = StyleSheet.create({
   form: { padding: 20 },
   label: { color: colors.text, fontSize: 16, marginBottom: 5 },
   input: {
-    backgroundColor: '#000',
+    backgroundColor: colors.surface,
     color: colors.text,
     padding: 15,
     borderRadius: 10,
@@ -97,5 +88,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 20,
   },
-  saveText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
+  saveText: { color: colors.text, fontSize: 16, fontWeight: 'bold' },
 });

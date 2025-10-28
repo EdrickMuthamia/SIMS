@@ -1,41 +1,30 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Linking, Modal, TextInput, Alert, Platform } from 'react-native';
-import colors from '../styles/colors.jsx';
+import colors from '../styles/colors';
 
 export default function SupportScreen() {
   const [isChatModalVisible, setIsChatModalVisible] = useState(false);
   const [chatMessage, setChatMessage] = useState('');
 
   const handleContact = (type) => {
-    if (type === 'email') {
-      Linking.openURL('mailto:support@example.com');
-    } else if (type === 'phone') {
-      Linking.openURL('tel:+1234567890');
-    }
+    if (type === 'email') Linking.openURL('mailto:support@example.com');
+    else if (type === 'phone') Linking.openURL('tel:+1234567890');
   };
 
-  const handleLiveChat = () => {
-    setIsChatModalVisible(true);
-  };
+  const handleLiveChat = () => setIsChatModalVisible(true);
 
   const handleSendChat = () => {
     if (chatMessage.trim()) {
       Alert.alert('Message Sent', 'Your message has been sent to support.');
       setChatMessage('');
       setIsChatModalVisible(false);
-    } else {
-      Alert.alert('Error', 'Please enter a message.');
-    }
+    } else Alert.alert('Error', 'Please enter a message.');
   };
 
   const handleHelpResource = (type) => {
-    if (type === 'faq') {
-      Linking.openURL('https://example.com/faq');
-    } else if (type === 'guide') {
-      Linking.openURL('https://example.com/user-guide');
-    } else if (type === 'tutorials') {
-      Linking.openURL('https://example.com/video-tutorials');
-    }
+    if (type === 'faq') Linking.openURL('https://example.com/faq');
+    else if (type === 'guide') Linking.openURL('https://example.com/user-guide');
+    else if (type === 'tutorials') Linking.openURL('https://example.com/video-tutorials');
   };
 
   const handleRateApp = () => {
@@ -43,66 +32,47 @@ export default function SupportScreen() {
     Linking.openURL(storeUrl);
   };
 
-  const handleSendFeedback = () => {
-    Linking.openURL('mailto:feedback@example.com?subject=App Feedback');
-  };
+  const handleSendFeedback = () => Linking.openURL('mailto:feedback@example.com?subject=App Feedback');
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerText}>HELP & SUPPORT</Text>
       </View>
-
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Contact Us</Text>
-
         <TouchableOpacity style={styles.button} onPress={() => handleContact('email')}>
           <Text style={styles.buttonText}>Email Support</Text>
         </TouchableOpacity>
-
         <TouchableOpacity style={styles.button} onPress={() => handleContact('phone')}>
           <Text style={styles.buttonText}>Call Support</Text>
         </TouchableOpacity>
-
         <TouchableOpacity style={styles.button} onPress={handleLiveChat}>
           <Text style={styles.buttonText}>Live Chat</Text>
         </TouchableOpacity>
       </View>
-
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Help Resources</Text>
-
         <TouchableOpacity style={styles.button} onPress={() => handleHelpResource('faq')}>
           <Text style={styles.buttonText}>FAQ</Text>
         </TouchableOpacity>
-
         <TouchableOpacity style={styles.button} onPress={() => handleHelpResource('guide')}>
           <Text style={styles.buttonText}>User Guide</Text>
         </TouchableOpacity>
-
         <TouchableOpacity style={styles.button} onPress={() => handleHelpResource('tutorials')}>
           <Text style={styles.buttonText}>Video Tutorials</Text>
         </TouchableOpacity>
       </View>
-
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Feedback</Text>
-
         <TouchableOpacity style={styles.button} onPress={handleRateApp}>
           <Text style={styles.buttonText}>Rate App</Text>
         </TouchableOpacity>
-
         <TouchableOpacity style={styles.button} onPress={handleSendFeedback}>
           <Text style={styles.buttonText}>Send Feedback</Text>
         </TouchableOpacity>
       </View>
-
-      <Modal
-        visible={isChatModalVisible}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={() => setIsChatModalVisible(false)}
-      >
+      <Modal visible={isChatModalVisible} animationType="slide" transparent onRequestClose={() => setIsChatModalVisible(false)}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Live Chat</Text>
@@ -179,6 +149,7 @@ const styles = StyleSheet.create({
     height: 100,
     textAlignVertical: 'top',
     marginBottom: 15,
+    backgroundColor: colors.surface,
   },
   modalButtons: {
     flexDirection: 'row',
