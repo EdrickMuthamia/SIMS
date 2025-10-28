@@ -59,7 +59,7 @@ const ItemsScreen = () => {
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backButton}
-          onPress={() => router.push("/blank")}
+          onPress={() => router.push("/")}
         >
           <Text style={styles.backArrow}>←</Text>
         </TouchableOpacity>
@@ -190,6 +190,13 @@ const styles = StyleSheet.create({
   searchInput: {
     color: "#fff",
     flex: 1,
+  },
+  scanButton: {
+    padding: 8,
+    marginLeft: 10,
+  },
+  scanIcon: {
+    fontSize: 20,
   },
   itemCard: {
     flexDirection: "row",
