@@ -159,6 +159,7 @@ const styles = StyleSheet.create({
     paddingTop: 40,
     paddingBottom: 40,
     marginHorizontal: 20,
+    marginTop: 40,
     alignItems: "center",
     shadowColor: "#000",
     shadowOpacity: 0.2,
