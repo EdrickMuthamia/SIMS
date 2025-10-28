@@ -1,0 +1,14 @@
+{
+  "expo": {
+    "name": "SFAMS Settings",
+    "slug": "sfams-settings",
+    "icon": "./assets/icons/logo.png",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ]
+  }
+}
