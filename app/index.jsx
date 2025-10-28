@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, StatusBar } from "react-native";
 import { useRouter } from "expo-router";
 
 const Home = () => {
@@ -7,6 +7,7 @@ const Home = () => {
 
   return (
     <View style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor="#020000ff" />
       <Text style={styles.title}>SIMS</Text>
 
       <TouchableOpacity 
@@ -15,6 +16,20 @@ const Home = () => {
       >
         <Text style={styles.buttonText}>Go to Items</Text>
       </TouchableOpacity>
+
+      <TouchableOpacity 
+        style={styles.button} 
+        onPress={() => router.push('/scanner')}
+      >
+        <Text style={styles.buttonText}>Scanner</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity 
+        style={styles.button} 
+        onPress={() => router.push('/assets')}
+      >
+        <Text style={styles.buttonText}>Assets</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -22,13 +37,15 @@ const Home = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#121212",
+    paddingTop: 50,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#520808ff",
+    backgroundColor: "#020000ff",
   },
   title: {
     fontSize: 32,
-    color: "#fff",
+    color: "#a18f8fff",
     marginBottom: 50,
   },
   button: {
