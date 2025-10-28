@@ -1,4 +1,0 @@
-- [x] Remove phone frame from App.jsx and make app full-screen
-- [x] Add SafeAreaProvider and SafeAreaView for proper mobile layout
-- [x] Update global styles for better mobile appearance
-- [x] Test navigation and screen layouts
