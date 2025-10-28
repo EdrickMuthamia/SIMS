@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   View,
   Text,
@@ -8,11 +8,12 @@ import {
   StyleSheet,
   Modal,
   FlatList,
+  Animated,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import { COLORS } from "../../../constants/theme";
-import { roles } from "../roles&perms"; 
+import { roles } from "../roles&perms";
 
 export default function AddUserStep1() {
   const router = useRouter();
@@ -21,11 +22,12 @@ export default function AddUserStep1() {
   const [email, setEmail] = useState("");
   const [avatar, setAvatar] = useState(null);
   const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 });
+  const roleButtonRef = useRef(null);
+  const fadeAnim = useRef(new Animated.Value(0)).current;
 
-  // Get available roles from roles data
   const availableRoles = roles.map((r) => r.name);
 
-  // Handle Next
   const handleNext = () => {
     if (!name || !role || !email) {
       alert("Please fill in all required fields");
@@ -37,7 +39,6 @@ export default function AddUserStep1() {
     });
   };
 
-  // Handle Image Upload
   const handleUploadPhoto = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -48,6 +49,26 @@ export default function AddUserStep1() {
     if (!result.canceled) {
       setAvatar(result.assets[0].uri);
     }
+  };
+
+  const openDropdown = () => {
+    roleButtonRef.current?.measureInWindow((x, y, width, height) => {
+      setDropdownPosition({ top: y + height + 5, left: x, width });
+      setDropdownVisible(true);
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: true,
+      }).start();
+    });
+  };
+
+  const closeDropdown = () => {
+    Animated.timing(fadeAnim, {
+      toValue: 0,
+      duration: 150,
+      useNativeDriver: true,
+    }).start(() => setDropdownVisible(false));
   };
 
   return (
@@ -62,12 +83,10 @@ export default function AddUserStep1() {
         <Text style={styles.headerText}>ADD USER - STEP 1</Text>
       </View>
 
-      {/* Step Title */}
       <Text style={styles.stepTitle}>Basic Information</Text>
 
-      {/* Form */}
       <View style={styles.formBox}>
-        {/* Avatar + Upload */}
+        {/* Upload Photo */}
         <TouchableOpacity onPress={handleUploadPhoto} style={styles.avatarContainer}>
           <Image
             source={avatar ? { uri: avatar } : require("../../../assets/avatar.png")}
@@ -76,7 +95,7 @@ export default function AddUserStep1() {
           <Text style={styles.uploadText}>Upload Photo</Text>
         </TouchableOpacity>
 
-        {/* Name Input */}
+        {/* Name */}
         <View style={styles.inputGroup}>
           <Text style={styles.label}>NAME:</Text>
           <TextInput
@@ -92,48 +111,62 @@ export default function AddUserStep1() {
         <View style={styles.inputGroup}>
           <Text style={styles.label}>ROLE:</Text>
           <TouchableOpacity
-            style={styles.input}
-            onPress={() => setDropdownVisible(!dropdownVisible)}
+            ref={roleButtonRef}
+            style={[styles.input, { justifyContent: "center" }]}
+            onPress={openDropdown}
           >
-            <Text style={{ color: role ? "#000" : "#777" }}>
-              {role || "Select role"}
-            </Text>
+            <Text style={{ color: role ? "#fff" : "#999" }}>{role || "Select role"}</Text>
           </TouchableOpacity>
 
-          {/* Dropdown Modal */}
-          <Modal
-            visible={dropdownVisible}
-            transparent
-            animationType="fade"
-            onRequestClose={() => setDropdownVisible(false)}
-          >
-            <TouchableOpacity
-              style={styles.modalOverlay}
-              activeOpacity={1}
-              onPressOut={() => setDropdownVisible(false)}
-            >
-              <View style={styles.dropdown}>
-                <FlatList
-                  data={availableRoles}
-                  keyExtractor={(item) => item}
-                  renderItem={({ item }) => (
-                    <TouchableOpacity
-                      style={styles.dropdownItem}
-                      onPress={() => {
-                        setRole(item);
-                        setDropdownVisible(false);
-                      }}
-                    >
-                      <Text style={styles.dropdownText}>{item}</Text>
-                    </TouchableOpacity>
-                  )}
-                />
-              </View>
-            </TouchableOpacity>
-          </Modal>
+          {dropdownVisible && (
+            <Modal transparent visible={dropdownVisible} onRequestClose={closeDropdown}>
+              <TouchableOpacity
+                style={styles.modalOverlay}
+                activeOpacity={1}
+                onPressOut={closeDropdown}
+              >
+                <Animated.View
+                  style={[
+                    styles.dropdown,
+                    {
+                      position: "absolute",
+                      top: dropdownPosition.top,
+                      left: dropdownPosition.left,
+                      width: dropdownPosition.width,
+                      opacity: fadeAnim,
+                      transform: [
+                        {
+                          translateY: fadeAnim.interpolate({
+                            inputRange: [0, 1],
+                            outputRange: [-5, 0],
+                          }),
+                        },
+                      ],
+                    },
+                  ]}
+                >
+                  <FlatList
+                    data={availableRoles}
+                    keyExtractor={(item) => item}
+                    renderItem={({ item }) => (
+                      <TouchableOpacity
+                        style={styles.dropdownItem}
+                        onPress={() => {
+                          setRole(item);
+                          closeDropdown();
+                        }}
+                      >
+                        <Text style={styles.dropdownText}>{item}</Text>
+                      </TouchableOpacity>
+                    )}
+                  />
+                </Animated.View>
+              </TouchableOpacity>
+            </Modal>
+          )}
         </View>
 
-        {/* Email Input */}
+        {/* Email */}
         <View style={styles.inputGroup}>
           <Text style={styles.label}>EMAIL:</Text>
           <TextInput
@@ -147,7 +180,6 @@ export default function AddUserStep1() {
         </View>
       </View>
 
-      {/* Next Button */}
       <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
         <Text style={styles.nextText}>Next ➜</Text>
       </TouchableOpacity>
@@ -171,7 +203,6 @@ const styles = StyleSheet.create({
   cubeIcon: { position: "absolute", right: 25, top: 65, width: 40, height: 40 },
   headerText: { color: "#fff", fontWeight: "bold", fontSize: 22 },
   stepTitle: { color: "#FFD700", marginVertical: 20, fontSize: 18, fontWeight: "bold" },
-
   formBox: {
     width: "90%",
     backgroundColor: "#2a2a2a",
@@ -185,11 +216,11 @@ const styles = StyleSheet.create({
   inputGroup: { width: "100%", marginBottom: 15 },
   label: { color: "#fff", fontSize: 13, marginBottom: 4 },
   input: {
-    backgroundColor: "#ccc",
+    backgroundColor: "#333",
     borderRadius: 20,
     paddingVertical: 10,
     paddingHorizontal: 18,
-    color: "#000",
+    color: "#fff",
   },
   nextButton: {
     backgroundColor: COLORS.primary,
@@ -201,20 +232,22 @@ const styles = StyleSheet.create({
   nextText: { color: "#fff", fontWeight: "bold", fontSize: 16 },
   modalOverlay: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.6)",
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.3)",
   },
   dropdown: {
-    backgroundColor: "#333",
-    width: "80%",
+    backgroundColor: "#222",
     borderRadius: 10,
-    paddingVertical: 10,
+    elevation: 8,
+    shadowColor: "#000",
+    shadowOpacity: 0.4,
+    shadowRadius: 8,
+    maxHeight: 200,
   },
   dropdownItem: {
-    padding: 12,
-    borderBottomColor: "#555",
+    paddingVertical: 12,
+    paddingHorizontal: 15,
     borderBottomWidth: 1,
+    borderBottomColor: "#333",
   },
-  dropdownText: { color: "#fff", fontSize: 16 },
+  dropdownText: { color: "#fff", fontSize: 14 },
 });

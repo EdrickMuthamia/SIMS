@@ -1,8 +1,20 @@
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Image } from "react-native";
-import { useRouter } from "expo-router";
+import React, { useState, useCallback } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  StyleSheet,
+  Image,
+} from "react-native";
+import { useRouter, useLocalSearchParams, useFocusEffect } from "expo-router";
 import { COLORS } from "../../constants/theme";
 
-export const roles = [
+export default function RolesPermissions() {
+  const router = useRouter();
+  const params = useLocalSearchParams();
+
+  const [roles, setRoles] = useState([
     {
       name: "Admin",
       description: "Full system access, manage all users & settings",
@@ -16,17 +28,31 @@ export const roles = [
     {
       name: "Staff",
       description: "Add/View Inventory, manage tasks",
-      color: "#F3B52E",
+      color: "#50C878",
     },
     {
       name: "Vendor",
       description: "Create and track purchase order",
-      color: "#F3B52E",
+      color: "#E74C3C",
     },
-];
+  ]);
 
-export default function RolesPermissions() {
-  const router = useRouter();
+  // When returning from AddRole, add the new role to the list
+  useFocusEffect(
+    useCallback(() => {
+      if (params?.newRole) {
+        try {
+          const parsedRole = JSON.parse(params.newRole);
+          const exists = roles.some((r) => r.name === parsedRole.name);
+          if (!exists) {
+            setRoles((prev) => [...prev, parsedRole]);
+          }
+        } catch (error) {
+          console.log("Error parsing new role:", error);
+        }
+      }
+    }, [params])
+  );
 
   return (
     <View style={styles.container}>
@@ -38,25 +64,20 @@ export default function RolesPermissions() {
         >
           <Text style={styles.backText}>←</Text>
         </TouchableOpacity>
-        <Image
-          source={require("../../assets/icon.png")}
-          style={styles.buildingIcon}
-        />
-        <Image
-          source={require("../../assets/splash-icon.png")}
-          style={styles.cubeIcon}
-        />
+        <Image source={require("../../assets/icon.png")} style={styles.buildingIcon} />
+        <Image source={require("../../assets/splash-icon.png")} style={styles.cubeIcon} />
         <Text style={styles.headerText}>USERS</Text>
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false}>
         <Text style={styles.sectionHeader}>ROLES & PERMISSIONS</Text>
-        <Text style={styles.subHeader}>
-          → Define and Manage User Capabilities
-        </Text>
+        <Text style={styles.subHeader}>→ Define and Manage User Capabilities</Text>
 
         {/* Add Role Button */}
-        <TouchableOpacity style={styles.addButton}>
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={() => router.push("user_screens/addRole")}
+        >
           <Text style={styles.addButtonText}>+ Add New Role</Text>
         </TouchableOpacity>
 
@@ -64,6 +85,7 @@ export default function RolesPermissions() {
           <View key={role.name} style={styles.roleCard}>
             <Text style={[styles.roleName, { color: role.color }]}>{role.name}</Text>
             <Text style={styles.roleDescription}>{role.description}</Text>
+
             <TouchableOpacity
               style={styles.permissionButton}
               onPress={() =>
@@ -96,14 +118,7 @@ const styles = StyleSheet.create({
   backArrow: { position: "absolute", top: 60, left: 25 },
   backText: { color: "#fff", fontSize: 26 },
   buildingIcon: { width: 80, height: 80, resizeMode: "contain" },
-  cubeIcon: {
-    position: "absolute",
-    right: 25,
-    top: 65,
-    width: 40,
-    height: 40,
-    resizeMode: "contain",
-  },
+  cubeIcon: { position: "absolute", right: 40, top: 40, width: 30, height: 30 },
   headerText: { color: "#fff", fontWeight: "bold", fontSize: 22, marginTop: 5 },
   sectionHeader: {
     color: "#FFD700",

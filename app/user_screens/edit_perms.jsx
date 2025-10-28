@@ -113,14 +113,7 @@ const styles = StyleSheet.create({
   backArrow: { position: "absolute", top: 60, left: 25 },
   backText: { color: "#fff", fontSize: 26 },
   buildingIcon: { width: 80, height: 80, resizeMode: "contain" },
-  cubeIcon: {
-    position: "absolute",
-    right: 25,
-    top: 65,
-    width: 40,
-    height: 40,
-    resizeMode: "contain",
-  },
+  cubeIcon: {position: "absolute", right: 40, top: 40, width: 30, height: 30},
   headerText: { color: "#fff", fontWeight: "bold", fontSize: 22, marginTop: 5 },
   roleTitle: {
     alignSelf: "center",
