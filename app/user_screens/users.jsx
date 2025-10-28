@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { COLORS } from "../../constants/theme";
+import { Alert } from "react-native";
 
 export default function UsersScreen() {
   const router = useRouter();
@@ -118,6 +119,24 @@ export default function UsersScreen() {
     );
     setEditModalVisible(false);
   };
+        // Delete user
+   const handleRemoveUser = (id) => {
+        Alert.alert(
+        "Confirm Delete",
+        "Are you sure you want to remove the most recently viewed user?",
+       [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Remove",
+        style: "destructive",
+        onPress: () => {
+          setUsers((prev) => prev.filter((user) => user.id !== id));
+        },
+      },
+       ]
+     );
+    };
+
 
   return (
     <View style={styles.container}>
@@ -138,7 +157,7 @@ export default function UsersScreen() {
       <View style={styles.searchRow}>
         <TouchableOpacity
           style={styles.addButton}
-          onPress={() => router.push("/user_screens/addUser")}
+          onPress={() => router.push("/user_screens/addUser_screens/step_1")}
         >
           <Text style={styles.addButtonText}>+ Add User</Text>
         </TouchableOpacity>
@@ -206,9 +225,20 @@ export default function UsersScreen() {
         >
           <Text style={styles.footerButtonText}>View permission settings</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.footerButtonRed}>
-          <Text style={styles.footerButtonText}>Remove User</Text>
-        </TouchableOpacity>
+        <TouchableOpacity
+         style={styles.footerButtonRed}
+         onPress={() => {
+          if (selectedUser) {
+          handleRemoveUser(selectedUser.id);
+          setInfoModalVisible(false);
+          } else {
+         Alert.alert("No user selected", "Tap on a user first to select them.");
+        }
+       }}
+      >
+       <Text style={styles.footerButtonText}>Remove User</Text>
+       </TouchableOpacity>
+
       </View>
 
       <TouchableOpacity style={styles.exportButton}>
@@ -224,10 +254,10 @@ export default function UsersScreen() {
                 <Text style={styles.modalTitle}>{selectedUser.name.toUpperCase()}</Text>
                 <Text style={styles.detailText}> {selectedUser.email}</Text>
                 <Text style={styles.detailText}> {selectedUser.phone}</Text>
-                <Text style={styles.detailText}>🏢 Department: {selectedUser.department}</Text>
-                <Text style={styles.detailText}>📍 Branch: {selectedUser.branch}</Text>
-                <Text style={styles.detailText}>
-                  🔖 Status:{" "}
+                <Text style={styles.detailText}> DEPARTMENT: {selectedUser.department}</Text>
+                <Text style={styles.detailText}> BRANCH: {selectedUser.branch}</Text>
+                <Text style={styles.statusText}>
+                   STATUS:{" "}
                   <Text
                     style={{
                       color: selectedUser.status === "Active" ? "#5EEBA1" : "#F87171",
@@ -236,7 +266,7 @@ export default function UsersScreen() {
                     {selectedUser.status}
                   </Text>
                 </Text>
-                <Text style={styles.detailText}>🗓 Joined: {selectedUser.joined}</Text>
+                <Text style={styles.statusText}> Joined: {selectedUser.joined}</Text>
 
                 <TouchableOpacity
                   style={[styles.modalButton, { backgroundColor: COLORS.primary, marginTop: 20 }]}
@@ -328,10 +358,11 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: COLORS.primary,
     borderRadius: 30,
-    height: 170,
+    height: 150,
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 20,
+    marginTop: 50,
   },
   backArrow: { position: "absolute", top: 60, left: 25 },
   backText: { color: "#fff", fontSize: 26 },
@@ -438,7 +469,8 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   modalTitle: { color: "#fff", fontWeight: "bold", fontSize: 18, marginBottom: 10 },
-  detailText: { color: "#ccc", fontSize: 14, marginVertical: 2 },
+  detailText: { color: "#ffffffff", fontSize: 16, marginVertical: 2 },
+  statusText: { color: "#bdbdbdff", fontSize: 16, marginVertical: 2, paddingLeft:100, paddingTop:5 },
   inputGroup: { marginBottom: 12 },
   label: { color: "#bbb", fontSize: 13, marginBottom: 4 },
   modalInput: {

@@ -184,11 +184,12 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.black },
   header: {
     backgroundColor: COLORS.primary,
-    borderRadius: 20,
-    paddingTop: 40,
-    paddingBottom: 30,
-    paddingHorizontal: 20,
+    borderRadius: 30,
+    height: 150,
+    justifyContent: "center",
     alignItems: "center",
+    marginBottom: 20,
+    marginTop: 50,
   },
   headerTop: {
     width: "90%",

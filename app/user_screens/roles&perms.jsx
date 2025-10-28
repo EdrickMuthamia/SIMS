@@ -2,14 +2,11 @@ import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Image } from "rea
 import { useRouter } from "expo-router";
 import { COLORS } from "../../constants/theme";
 
-export default function RolesPermissions() {
-  const router = useRouter();
-
-  const roles = [
+export const roles = [
     {
       name: "Admin",
       description: "Full system access, manage all users & settings",
-      color: "#FF007F",
+      color: "#436ab1ff",
     },
     {
       name: "Manager",
@@ -26,7 +23,10 @@ export default function RolesPermissions() {
       description: "Create and track purchase order",
       color: "#F3B52E",
     },
-  ];
+];
+
+export default function RolesPermissions() {
+  const router = useRouter();
 
   return (
     <View style={styles.container}>
@@ -85,12 +85,13 @@ export default function RolesPermissions() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#121212", paddingHorizontal: 20 },
   header: {
-  backgroundColor: COLORS.primary,
-  borderRadius: 30,
-  height: 170, 
-  justifyContent: "center",
-  alignItems: "center",
-  marginBottom: 20,
+    backgroundColor: COLORS.primary,
+    borderRadius: 30,
+    height: 150,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20,
+    marginTop: 50,
   },
   backArrow: { position: "absolute", top: 60, left: 25 },
   backText: { color: "#fff", fontSize: 26 },
@@ -121,7 +122,7 @@ const styles = StyleSheet.create({
   },
   addButtonText: { color: "#fff", fontWeight: "bold" },
   roleCard: {
-    backgroundColor: "#1E1E1E",
+    backgroundColor: "#383535ff",
     borderRadius: 15,
     padding: 15,
     marginVertical: 8,
