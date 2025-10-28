@@ -127,11 +127,14 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: "#E91E63",
     paddingVertical: 50,
+    borderTopLeftRadius: 35,
+    borderTopRightRadius: 35,
     borderBottomLeftRadius: 35,
     borderBottomRightRadius: 35,
     alignItems: "center",
     justifyContent: "center",
     position: "relative",
+    top: -20,
   },
   headerIcon: {
     width: 70,
@@ -146,7 +149,7 @@ const styles = StyleSheet.create({
     height: 35,
     position: "absolute",
     right: 25,
-    top: 39,
+    top: 50,
     
   },
   backButton: {
@@ -158,10 +161,8 @@ const styles = StyleSheet.create({
   },
   backArrow: {
     color: "#f1eaeaff",
-    fontSize: 45,
+    fontSize: 55,
     fontWeight: "bold",
-    
-
   },
   headerTitle: {
     color: "#fff",
