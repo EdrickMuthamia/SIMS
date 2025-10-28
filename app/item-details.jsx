@@ -33,6 +33,7 @@ const ItemDetails = () => {
           <Text style={styles.backArrow}>←</Text>
         </TouchableOpacity>
         <Text style={styles.headerTitle}>ITEM DETAILS</Text>
+        <Image source={require("../assets/splash-icon.png")} style={styles.rightIcon} />
       </View>
 
       {/* Item Image */}
@@ -111,10 +112,9 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: "#E91E63",
-    paddingVertical: 20,
-    paddingTop: 50,
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
+    paddingVertical: 50,
+    borderBottomLeftRadius: 35,
+    borderBottomRightRadius: 35,
     alignItems: "center",
     justifyContent: "center",
     position: "relative",
@@ -127,14 +127,23 @@ const styles = StyleSheet.create({
   },
   backArrow: {
     color: "#fff",
-    fontSize: 36,
+    fontSize: 55,
     fontWeight: "bold",
-    bottom: 35,
+    bottom: 45,
+    right: 15,
   },
   headerTitle: {
     color: "#fff",
     fontSize: 18,
     fontWeight: "bold",
+    top: 15,
+  },
+  rightIcon: {
+    width: 35,
+    height: 35,
+    position: "absolute",
+    right: 25,
+    top: 55,
   },
   imageContainer: {
     alignItems: "center",
