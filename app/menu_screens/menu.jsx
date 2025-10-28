@@ -1,5 +1,13 @@
 import React, { useRef, useEffect } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Animated, Dimensions, Image } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Animated,
+  Dimensions,
+  Image,
+} from "react-native";
 import { useRouter } from "expo-router";
 import { COLORS } from "../../constants/theme";
 
@@ -7,31 +15,71 @@ const { width, height } = Dimensions.get("window");
 
 export default function MenuScreen() {
   const router = useRouter();
-  const slideAnim = useRef(new Animated.Value(width)).current;
+
+  // Start off-screen top-left, smaller and faded out
+  const translateX = useRef(new Animated.Value(-width)).current;
+  const translateY = useRef(new Animated.Value(-height * 0.2)).current;
+  const scale = useRef(new Animated.Value(0.85)).current;
+  const opacity = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    Animated.timing(slideAnim, {
-      toValue: 0,
-      duration: 400,
-      useNativeDriver: true,
-    }).start();
+    Animated.parallel([
+      Animated.timing(translateX, {
+        toValue: 0,
+        duration: 600,
+        useNativeDriver: true,
+      }),
+      Animated.timing(translateY, {
+        toValue: 0,
+        duration: 600,
+        useNativeDriver: true,
+      }),
+      Animated.spring(scale, {
+        toValue: 1,
+        friction: 5,
+        tension: 40,
+        useNativeDriver: true,
+      }),
+      Animated.timing(opacity, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: true,
+      }),
+    ]).start();
   }, []);
 
   return (
-    <Animated.View style={[styles.container, { transform: [{ translateX: slideAnim }] }]}>
-      {/* Top Header */}
+    <Animated.View
+      style={[
+        styles.container,
+        {
+          opacity,
+          transform: [{ translateX }, { translateY }, { scale }],
+        },
+      ]}
+    >
+      {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.closeIcon} onPress={() => router.push("/")}>
+        <TouchableOpacity
+          style={styles.closeIcon}
+          onPress={() => router.push("/")}
+        >
           <Text style={styles.closeText}>✕</Text>
         </TouchableOpacity>
 
-        <Image source={require("../../assets/office-building.png")} style={styles.buildingIcon} />
-        <Image source={require("../../assets/splash-icon.png")} style={styles.cubeIcon} />
-        
-        <Text style={styles.headerText}>ORGANIZATIONS DETAILS</Text>
+        <Image
+          source={require("../../assets/office-building.png")}
+          style={styles.buildingIcon}
+        />
+        <Image
+          source={require("../../assets/splash-icon.png")}
+          style={styles.cubeIcon}
+        />
+
+        <Text style={styles.headerText}>ORGANIZATION DETAILS</Text>
       </View>
 
-      {/* Menu Section */}
+      {/* Menu */}
       <View style={styles.menuContent}>
         {["Orders", "Vendors", "Settings", "History"].map((item) => (
           <TouchableOpacity
@@ -66,15 +114,27 @@ const styles = StyleSheet.create({
 
   closeIcon: { position: "absolute", top: 60, left: 25 },
   closeText: { color: "#fff", fontSize: 28 },
-  buildingIcon: { width: 160, height: 120, resizeMode: "contain", marginTop: 10 },
-  cubeIcon: { position: "absolute", right: 40, top: 65, width: 50, height: 50, resizeMode: "contain" },
+  buildingIcon: {
+    width: 160,
+    height: 120,
+    resizeMode: "contain",
+    marginTop: 10,
+  },
+  cubeIcon: {
+    position: "absolute",
+    right: 40,
+    top: 65,
+    width: 50,
+    height: 50,
+    resizeMode: "contain",
+  },
 
   menuContent: {
     flex: 1,
-    justifyContent: "center", // <-- Centers vertically
+    justifyContent: "center",
     alignItems: "center",
     gap: 20,
-    marginTop: -40, // slight overlap for smooth transition
+    marginTop: -40,
   },
 
   menuButton: {
@@ -96,12 +156,11 @@ const styles = StyleSheet.create({
   },
   logoutText: { color: "#fff", fontWeight: "600", fontSize: 16 },
 
-    headerText: {
+  headerText: {
     marginTop: 15,
     fontSize: 15,
     color: "#fff",
     fontFamily: "Poppins-Bold",
     textTransform: "uppercase",
   },
-
 });

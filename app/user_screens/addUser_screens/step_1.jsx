@@ -26,7 +26,8 @@ export default function AddUserStep1() {
   const roleButtonRef = useRef(null);
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
-  const availableRoles = roles.map((r) => r.name);
+  const availableRoles = (roles || []).map((r) => r.name);
+
 
   const handleNext = () => {
     if (!name || !role || !email) {
@@ -192,10 +193,12 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: COLORS.primary,
     borderRadius: 30,
+    height: 150,
+    justifyContent: "center",
     alignItems: "center",
-    paddingTop: 60,
-    paddingBottom: 25,
     width: "100%",
+    marginTop: 50,
+    marginBottom: 20,
   },
   backArrow: { position: "absolute", top: 60, left: 25 },
   backText: { color: "#fff", fontSize: 26 },

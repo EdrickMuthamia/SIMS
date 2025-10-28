@@ -10,6 +10,29 @@ import {
 import { useRouter, useLocalSearchParams, useFocusEffect } from "expo-router";
 import { COLORS } from "../../constants/theme";
 
+export const roles = [
+      {
+      name: "Admin",
+      description: "Full system access, manage all users & settings",
+      color: "#436ab1ff",
+    },
+    {
+      name: "Manager",
+      description: "Oversees inventory, Approve orders",
+      color: "#F3B52E",
+    },
+    {
+      name: "Staff",
+      description: "Add/View Inventory, manage tasks",
+      color: "#50C878",
+    },
+    {
+      name: "Vendor",
+      description: "Create and track purchase order",
+      color: "#E74C3C",
+    },
+]
+
 export default function RolesPermissions() {
   const router = useRouter();
   const params = useLocalSearchParams();

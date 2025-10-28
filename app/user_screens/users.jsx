@@ -470,7 +470,7 @@ const styles = StyleSheet.create({
   },
   modalTitle: { color: "#fff", fontWeight: "bold", fontSize: 18, marginBottom: 10 },
   detailText: { color: "#ffffffff", fontSize: 16, marginVertical: 2 },
-  statusText: { color: "#bdbdbdff", fontSize: 16, marginVertical: 2, paddingLeft:100, paddingTop:5 },
+  statusText: { color: "#bdbdbdff", fontSize: 16, marginVertical: 2, paddingLeft:150, paddingTop: 1},
   inputGroup: { marginBottom: 12 },
   label: { color: "#bbb", fontSize: 13, marginBottom: 4 },
   modalInput: {
