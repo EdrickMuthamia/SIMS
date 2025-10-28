@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { globalStyles } from '../styles/globalStyles';
 import colors from '../styles/colors';
 
@@ -13,7 +14,7 @@ export default function AccountSettingsScreen({ navigation }) {
   ];
 
   return (
-    <View style={globalStyles.container}>
+    <SafeAreaView style={globalStyles.container}>
       <View style={globalStyles.headerContainer}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Text style={{ color: colors.text, fontSize: 18 }}>{'< Back'}</Text>
@@ -39,6 +40,6 @@ export default function AccountSettingsScreen({ navigation }) {
           <Text style={globalStyles.helpText}>Help & Support</Text>
         </TouchableOpacity>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
