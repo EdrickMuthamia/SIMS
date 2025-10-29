@@ -1,1 +1,1 @@
-# School-Inventory-system-frontend
+# SIMS
