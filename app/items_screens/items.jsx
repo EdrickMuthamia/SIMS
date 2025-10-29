@@ -9,6 +9,7 @@ import {
   StyleSheet,
 } from "react-native";
 import { useRouter } from "expo-router";
+import { COLORS } from "../../constants/theme";
 
 const ItemsScreen = () => {
   const router = useRouter();
@@ -125,16 +126,13 @@ const styles = StyleSheet.create({
     paddingTop: 50,
   },
   header: {
-    backgroundColor: "#E91E63",
-    paddingVertical: 50,
-    borderTopLeftRadius: 35,
-    borderTopRightRadius: 35,
-    borderBottomLeftRadius: 35,
-    borderBottomRightRadius: 35,
-    alignItems: "center",
+    backgroundColor: COLORS.primary,
+    borderRadius: 30,
+    height: 150,
     justifyContent: "center",
-    position: "relative",
-    top: -20,
+    alignItems: "center",
+    marginBottom: 20,
+    marginTop: 0,
   },
   headerIcon: {
     width: 70,
@@ -157,19 +155,20 @@ const styles = StyleSheet.create({
     left: 15,
     top: 18,
     
-
   },
   backArrow: {
     color: "#f1eaeaff",
-    fontSize: 55,
+    fontSize: 22,
     fontWeight: "bold",
+    paddingLeft: 10,
+    paddingTop: 40,
   },
   headerTitle: {
     color: "#fff",
     fontSize: 18,
     fontWeight: "bold",
     top: 40,
-    left: 10,
+    left: 0,
   },
   searchContainer: {
     flexDirection: "row",
