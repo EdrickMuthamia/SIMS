@@ -9,14 +9,16 @@ import {
   ScrollView,
   Image,
 } from "react-native";
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 
 const AssetBorrowScreen = () => {
   const router = useRouter();
-  const [serialId, setSerialId] = useState("");
-  const [itemName, setItemName] = useState("");
-  const [borrowStatus, setBorrowStatus] = useState("");
-  const [condition, setCondition] = useState("");
+  const params = useLocalSearchParams();
+  
+  const [serialId, setSerialId] = useState(params.serialId || "");
+  const [itemName, setItemName] = useState(params.itemName || "");
+  const [borrowStatus, setBorrowStatus] = useState(params.borrowStatus || "");
+  const [condition, setCondition] = useState(params.condition || "");
 
   const handleBorrowItem = () => {
     console.log("Borrowing item:", {

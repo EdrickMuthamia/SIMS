@@ -18,10 +18,17 @@ const Scanner = () => {
 
   const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
-    Alert.alert("Code Scanned", `Data: ${data}`, [
-      { text: "Scan Again", onPress: () => setScanned(false) },
-      { text: "Back", onPress: () => router.back() },
-    ]);
+    
+    // Navigate to assets page with scanned data
+    router.push({
+      pathname: '/assets',
+      params: {
+        serialId: data,
+        itemName: `Scanned Item: ${data}`,
+        borrowStatus: "Unknown",
+        condition: `Scanned data: ${data}\nScan type: ${type}\nScanned at: ${new Date().toLocaleString()}`
+      }
+    });
   };
 
 
