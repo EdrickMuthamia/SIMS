@@ -6,17 +6,28 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
+<<<<<<< HEAD
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
+=======
+
+    "userInterfaceStyle": "light",
+>>>>>>> SIMS-3
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+<<<<<<< HEAD
+=======
+    "newArchEnabled": true,
+
+>>>>>>> SIMS-3
     "ios": {
       "supportsTablet": true
     },
     "android": {
+<<<<<<< HEAD
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -25,6 +36,13 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+=======
+
+      "edgeToEdgeEnabled": true
+    },
+    "web": {
+
+>>>>>>> SIMS-3
     },
     "plugins": [
       "expo-router"
