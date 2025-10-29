@@ -62,7 +62,7 @@ export default function MenuScreen() {
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.closeIcon}
-          onPress={() => router.push("/")}
+          onPress={() => router.push("/home_screen/home")}
         >
           <Text style={styles.closeText}>✕</Text>
         </TouchableOpacity>

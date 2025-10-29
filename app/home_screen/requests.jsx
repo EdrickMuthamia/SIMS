@@ -88,7 +88,7 @@ export default function Requests() {
    
       <View style={styles.header}>
         <View style={styles.headerTop}>
-          <TouchableOpacity onPress={() => router.back()}>
+          <TouchableOpacity onPress={() => router.push("/home_screen/home")}>
             <Text style={styles.backArrow}>←</Text>
           </TouchableOpacity>
 

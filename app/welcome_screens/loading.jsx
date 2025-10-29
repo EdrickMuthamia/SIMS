@@ -41,7 +41,7 @@ export default function Loading() {
 
         // Phase 3: "READY !" (4s-7s, then navigate)
         const timer3 = setTimeout(() => {
-            router.replace("/welcome_screens/home"); // Change to your white page route
+            router.replace("/home_screen/home"); // Change to your white page route
         }, 7000);
 
         return () => {

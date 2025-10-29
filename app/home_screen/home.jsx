@@ -69,7 +69,7 @@ export default function OrganizationDetails() {
         <View style={styles.header}>
           <View style={styles.headerTop}>
           
-            <TouchableOpacity style={styles.menuIcon} onPress={() => router.push("/menu")}>
+            <TouchableOpacity style={styles.menuIcon} onPress={() => router.push("menu_screens/menu")}>
               <Text style={styles.menuLine}>☰</Text>
             </TouchableOpacity>
 
@@ -130,7 +130,7 @@ export default function OrganizationDetails() {
                       ? "/home_screen/requests"
                       : label === "USER MANAGEMENT"
                       ? "/home_screen/userManagement"
-                      : "/home_screen/items"
+                      : "/items_screens/items"
                   )
                 }
               >

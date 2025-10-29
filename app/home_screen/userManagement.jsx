@@ -77,7 +77,7 @@ export default function UserManagement() {
     
       <View style={styles.header}>
         <View style={styles.headerTop}>
-          <TouchableOpacity onPress={() => router.back()}>
+          <TouchableOpacity onPress={() => router.push("/home_screen/home")}>
             <Text style={styles.backArrow}>←</Text>
           </TouchableOpacity>
           <Image
@@ -157,19 +157,19 @@ export default function UserManagement() {
 
      
       <View style={styles.navBar}>
-        <TouchableOpacity onPress={() => router.push("/scan")}>
+        <TouchableOpacity onPress={() => router.push("scanner_screens/scan")}>
           <Image
             source={require("../../assets/scan-icon.png")}
             style={styles.navIcon}
           />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => router.push("/home")}>
+        <TouchableOpacity onPress={() => router.push("items_screens/items")}>
           <Image
             source={require("../../assets/home-icon.png")}
             style={styles.navIcon}
           />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => router.push("/profile")}>
+        <TouchableOpacity onPress={() => router.push("user_screens/users")}>
           <Image
             source={require("../../assets/person-icon.png")}
             style={styles.navIcon}

@@ -59,7 +59,7 @@ const ItemsScreen = () => {
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backButton}
-          onPress={() => router.push("/")}
+          onPress={() => router.push("home_screen/userManagement")}
         >
           <Text style={styles.backArrow}>←</Text>
         </TouchableOpacity>
