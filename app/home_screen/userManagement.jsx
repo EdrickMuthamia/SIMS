@@ -12,7 +12,7 @@ import {
   Dimensions,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { COLORS } from "../constants/theme";
+import { COLORS } from "../../constants/theme";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -25,21 +25,21 @@ export default function UserManagement() {
       name: "LENOVO IDEAPAD",
       status: "PENDING",
       date: "2 Oct 2023",
-      icon: require("../assets/laptop-icon.png"),
+      icon: require("../../assets/laptop-icon.png"),
     },
     {
       serial: "0940FB0",
       name: "DELL G16 7630",
       status: "DENIED",
       date: "10 Mar 2024",
-      icon: require("../assets/desktop-icon.png"),
+      icon: require("../../assets/desktop-icon.png"),
     },
     {
       serial: "0940FB0",
       name: "PREDATOR PRO M612",
       status: "APPROVED",
       date: "17 Apr 2025",
-      icon: require("../assets/mouse-icon.png"),
+      icon: require("../../assets/mouse-icon.png"),
     },
   ];
 
@@ -81,13 +81,13 @@ export default function UserManagement() {
             <Text style={styles.backArrow}>←</Text>
           </TouchableOpacity>
           <Image
-            source={require("../assets/icon.png")}
+            source={require("../../assets/icon.png")}
             style={styles.logo}
             resizeMode="contain"
           />
           <View style={styles.logoCircle}>
             <Image
-              source={require("../assets/splash-icon.png")}
+              source={require("../../assets/splash-icon.png")}
               style={styles.headerIcon}
               resizeMode="contain"
             />
@@ -159,19 +159,19 @@ export default function UserManagement() {
       <View style={styles.navBar}>
         <TouchableOpacity onPress={() => router.push("/scan")}>
           <Image
-            source={require("../assets/scan-icon.png")}
+            source={require("../../assets/scan-icon.png")}
             style={styles.navIcon}
           />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => router.push("/home")}>
           <Image
-            source={require("../assets/home-icon.png")}
+            source={require("../../assets/home-icon.png")}
             style={styles.navIcon}
           />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => router.push("/profile")}>
           <Image
-            source={require("../assets/person-icon.png")}
+            source={require("../../assets/person-icon.png")}
             style={styles.navIcon}
           />
         </TouchableOpacity>

@@ -11,7 +11,7 @@ import {
   Animated,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { COLORS } from "../constants/theme";
+import { COLORS } from "../../constants/theme";
 
 export default function Requests() {
   const router = useRouter();
@@ -93,7 +93,7 @@ export default function Requests() {
           </TouchableOpacity>
 
           <Image
-            source={require("../assets/icon.png")}
+            source={require("../../assets/icon.png")}
             style={styles.logo}
             resizeMode="contain"
           />
@@ -105,7 +105,7 @@ export default function Requests() {
             ]}
           >
             <Image
-              source={require("../assets/splash-icon.png")}
+              source={require("../../assets/splash-icon.png")}
               style={styles.headerIcon}
               resizeMode="contain"
             />

@@ -12,7 +12,7 @@ import {
   Animated,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { COLORS } from "../constants/theme";
+import { COLORS } from "../../constants/theme";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -59,7 +59,7 @@ export default function OrganizationDetails() {
 
   const uploadLogo = () => {
     
-    setCompanyLogo(require("../assets/company-logo.png")); 
+    setCompanyLogo(require("../../assets/company-logo.png")); 
   };
 
   return (
@@ -85,14 +85,14 @@ export default function OrganizationDetails() {
                   source={
                     companyLogo
                       ? companyLogo
-                      : require("../assets/icon.png") 
+                      : require("../../assets/icon.png") 
                   }
                   style={styles.headerIcon}
                   resizeMode="contain"
                 />
                 <View style={styles.cameraOverlay}>
                   <Image
-                    source={require("../assets/camera-icon.png")}
+                    source={require("../../assets/camera-icon.png")}
                     style={styles.cameraIcon}
                     resizeMode="contain"
                   />
@@ -101,7 +101,7 @@ export default function OrganizationDetails() {
             </TouchableOpacity>
 
             <Image
-              source={require("../assets/splash-icon.png")}
+              source={require("../../assets/splash-icon.png")}
               style={styles.logo}
               resizeMode="contain"
             />
@@ -127,10 +127,10 @@ export default function OrganizationDetails() {
                 onPress={() =>
                   router.push(
                     label === "REQUESTS"
-                      ? "/requests"
+                      ? "/home_screen/requests"
                       : label === "USER MANAGEMENT"
-                      ? "/userManagement"
-                      : "/items"
+                      ? "/home_screen/userManagement"
+                      : "/home_screen/items"
                   )
                 }
               >
