@@ -12,21 +12,21 @@ const Home = () => {
 
       <TouchableOpacity 
         style={styles.button} 
-        onPress={() => router.push('/items')}
+        onPress={() => router.push('items_screens/items')}
       >
         <Text style={styles.buttonText}>Go to Items</Text>
       </TouchableOpacity>
 
       <TouchableOpacity 
         style={styles.button} 
-        onPress={() => router.push('/scanner')}
+        onPress={() => router.push('scanner_screens/scanner')}
       >
         <Text style={styles.buttonText}>Scanner</Text>
       </TouchableOpacity>
 
       <TouchableOpacity 
         style={styles.button} 
-        onPress={() => router.push('/assets')}
+        onPress={() => router.push('scanner_screens/assetBorrow')}
       >
         <Text style={styles.buttonText}>Assets</Text>
       </TouchableOpacity>

@@ -65,11 +65,11 @@ const Scanner = () => {
           <Text style={styles.backArrow}>←</Text>
         </TouchableOpacity>
         <Image
-          source={require("../assets/icon.png")}
+          source={require("../../assets/icon.png")}
           style={styles.headerIcon}
         />
        
-        <Image source={require("../assets/splash-icon.png")} style={styles.rightIcon} />
+        <Image source={require("../../assets/splash-icon.png")} style={styles.rightIcon} />
       </View>
 
       <Text style={styles.title}>SCAN HERE:</Text>

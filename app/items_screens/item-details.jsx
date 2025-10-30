@@ -28,12 +28,12 @@ const ItemDetails = () => {
       <View style={styles.header}>
         <TouchableOpacity 
           style={styles.backButton}
-          onPress={() => router.push('/items')}
+          onPress={() => router.push('items_screens/items')}
         >
           <Text style={styles.backArrow}>←</Text>
         </TouchableOpacity>
         <Text style={styles.headerTitle}>ITEM DETAILS</Text>
-        <Image source={require("../assets/splash-icon.png")} style={styles.rightIcon} />
+        <Image source={require("../../assets/splash-icon.png")} style={styles.rightIcon} />
       </View>
 
       {/* Item Image */}

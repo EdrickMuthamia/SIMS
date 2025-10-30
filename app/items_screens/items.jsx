@@ -83,16 +83,20 @@ const ItemsScreen = () => {
           <Text style={styles.backArrow}>←</Text>
         </TouchableOpacity>
         <Image
-          source={require("../assets/icon.png")}
+          source={require("../../assets/icon.png")}
           style={styles.headerIcon}
         />
         <Text style={styles.headerTitle}>ITEMS</Text>
+<<<<<<< HEAD:app/items.jsx
         <TouchableOpacity 
           style={styles.addButton}
           onPress={() => setShowAddForm(true)}
         >
           <Text style={styles.addButtonText}>+</Text>
         </TouchableOpacity>
+=======
+        <Image source={require("../../assets/splash-icon.png")} style={styles.rightIcon} />
+>>>>>>> d54207fb35da9e1b51e70e7f0d84c9777ff8fc79:app/items_screens/items.jsx
       </View>
 
       {/* Search Bar */}
@@ -148,7 +152,7 @@ const ItemsScreen = () => {
           <TouchableOpacity 
             style={styles.itemCard}
             onPress={() => router.push({
-              pathname: '/item-details',
+              pathname: 'items_screens/item-details',
               params: {
                 id: item.id,
                 name: item.name,
