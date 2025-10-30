@@ -1,12 +1,18 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+} from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { COLORS } from "../../constants/theme";
 
 const ItemDetails = () => {
   const router = useRouter();
   const { id, name, details, image } = useLocalSearchParams();
-  
+
   // Mock additional details with random borrowed status
   const isBorrowed = Math.random() > 0.5;
   const itemData = {
@@ -20,21 +26,24 @@ const ItemDetails = () => {
     category: "Electronics",
     dateAdded: "2024-01-15",
     borrowedBy: isBorrowed ? "John Doe" : null,
-    dueDate: isBorrowed ? "2024-12-30" : null
+    dueDate: isBorrowed ? "2024-12-30" : null,
   };
 
   return (
     <ScrollView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.backButton}
-          onPress={() => router.push('items_screens/items')}
+          onPress={() => router.push("items_screens/items")}
         >
           <Text style={styles.backArrow}>←</Text>
         </TouchableOpacity>
         <Text style={styles.headerTitle}>ITEM DETAILS</Text>
-        <Image source={require("../../assets/splash-icon.png")} style={styles.rightIcon} />
+        <Image
+          source={require("../../assets/splash-icon.png")}
+          style={styles.rightIcon}
+        />
       </View>
 
       {/* Item Image */}
@@ -45,12 +54,16 @@ const ItemDetails = () => {
       {/* Item Details */}
       <View style={styles.detailsContainer}>
         <Text style={styles.itemName}>{itemData.name}</Text>
-        
+
         <View style={styles.statusContainer}>
-          <Text style={[
-            styles.status, 
-            itemData.status === "Available" ? styles.available : styles.borrowed
-          ]}>
+          <Text
+            style={[
+              styles.status,
+              itemData.status === "Available"
+                ? styles.available
+                : styles.borrowed,
+            ]}
+          >
             {itemData.status}
           </Text>
         </View>
@@ -112,13 +125,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#121212",
   },
   header: {
-    backgroundColor: COLORS.primary,
-    borderRadius: 30,
-    height: 130,
-    justifyContent: "center",
+    backgroundColor: "#E91E63",
+    paddingVertical: 50,
+    borderBottomLeftRadius: 35,
+    borderBottomRightRadius: 35,
     alignItems: "center",
-    marginBottom: 20,
-    marginTop: 50,
+    justifyContent: "center",
+    position: "relative",
   },
   backButton: {
     position: "absolute",
@@ -128,10 +141,10 @@ const styles = StyleSheet.create({
   },
   backArrow: {
     color: "#fff",
-    fontSize: 22,
+    fontSize: 40,
     fontWeight: "bold",
-    bottom: 10,
-    right: 0,
+    bottom: 45,
+    right: 15,
   },
   headerTitle: {
     color: "#fff",

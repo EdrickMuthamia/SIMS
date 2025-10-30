@@ -14,7 +14,7 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 const AssetBorrowScreen = () => {
   const router = useRouter();
   const params = useLocalSearchParams();
-  
+
   const [serialId, setSerialId] = useState(params.serialId || "");
   const [itemName, setItemName] = useState(params.itemName || "");
   const [borrowStatus, setBorrowStatus] = useState(params.borrowStatus || "");
@@ -46,7 +46,10 @@ const AssetBorrowScreen = () => {
             style={styles.headerIcon}
           />
           <Text style={styles.headerTitle}>ASSETS</Text>
-          <Image source={require("../../assets/splash-icon.png")} style={styles.rightIcon} />
+          <Image
+            source={require("../../assets/splash-icon.png")}
+            style={styles.rightIcon}
+          />
         </View>
         <Text style={styles.sectionTitle}>ASSET INFORMATION</Text>
 
@@ -123,8 +126,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     position: "relative",
-
-
   },
   iconContainer: {
     width: 60,
@@ -180,7 +181,7 @@ const styles = StyleSheet.create({
   },
   backArrow: {
     color: "#f1eaeaff",
-    fontSize: 55,
+    fontSize: 40,
     fontWeight: "bold",
   },
   headerTitle: {

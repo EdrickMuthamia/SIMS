@@ -18,20 +18,18 @@ const Scanner = () => {
 
   const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
-    
-    // Navigate to assets page with scanned data
+
+    // Navigate to assetBorrow page with scanned data
     router.push({
-      pathname: '/assets',
+      pathname: "scanner_screens/assetBorrow",
       params: {
         serialId: data,
         itemName: `Scanned Item: ${data}`,
         borrowStatus: "Unknown",
-        condition: `Scanned data: ${data}\nScan type: ${type}\nScanned at: ${new Date().toLocaleString()}`
-      }
+        condition: `Scanned data: ${data}\nScan type: ${type}\nScanned at: ${new Date().toLocaleString()}`,
+      },
     });
   };
-
-
 
   if (!permission) {
     return (
@@ -60,7 +58,7 @@ const Scanner = () => {
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backButton}
-          onPress={() => router.push("home_screen/userManagement")}
+          onPress={() => router.push("/")}
         >
           <Text style={styles.backArrow}>←</Text>
         </TouchableOpacity>
@@ -68,8 +66,11 @@ const Scanner = () => {
           source={require("../../assets/icon.png")}
           style={styles.headerIcon}
         />
-       
-        <Image source={require("../../assets/splash-icon.png")} style={styles.rightIcon} />
+
+        <Image
+          source={require("../../assets/splash-icon.png")}
+          style={styles.rightIcon}
+        />
       </View>
 
       <Text style={styles.title}>SCAN HERE:</Text>
@@ -115,7 +116,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     position: "relative",
-    
   },
   headerIcon: {
     width: 70,
@@ -138,8 +138,9 @@ const styles = StyleSheet.create({
   },
   backArrow: {
     color: "#f1eaeaff",
-    fontSize: 55,
+    fontSize: 40,
     fontWeight: "bold",
+    top: 5,
   },
   headerTitle: {
     color: "#fff",
