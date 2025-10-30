@@ -19,9 +19,9 @@ const Scanner = () => {
   const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
     
-    // Navigate to assets page with scanned data
+    // Navigate to assetBorrow page with scanned data
     router.push({
-      pathname: '/assets',
+      pathname: 'scanner_screens/assetBorrow',
       params: {
         serialId: data,
         itemName: `Scanned Item: ${data}`,
@@ -138,8 +138,9 @@ const styles = StyleSheet.create({
   },
   backArrow: {
     color: "#f1eaeaff",
-    fontSize: 55,
+    fontSize: 40,
     fontWeight: "bold",
+    top: 5,
   },
   headerTitle: {
     color: "#fff",

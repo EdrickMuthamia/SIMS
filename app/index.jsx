@@ -12,7 +12,7 @@ const Home = () => {
 
       <TouchableOpacity 
         style={styles.button} 
-        onPress={() => router.push('items_screens/items')}
+        onPress={() => router.push('/items_screens/items')}
       >
         <Text style={styles.buttonText}>Go to Items</Text>
       </TouchableOpacity>
@@ -55,6 +55,11 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     minWidth: 150,
     alignItems: "center",
+    elevation: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
   },
   buttonText: {
     color: "#fff",

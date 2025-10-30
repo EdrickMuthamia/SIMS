@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
   },
   backArrow: {
     color: "#f1eaeaff",
-    fontSize: 55,
+    fontSize:40 ,
     fontWeight: "bold",
   },
   headerTitle: {
