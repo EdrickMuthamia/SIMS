@@ -13,6 +13,10 @@ import { useRouter } from "expo-router";
 const ItemsScreen = () => {
   const router = useRouter();
   const [search, setSearch] = useState("");
+  const [items, setItems] = useState(data);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newItemName, setNewItemName] = useState("");
+  const [newItemDetails, setNewItemDetails] = useState("");
 
   const data = [
     {
@@ -49,7 +53,22 @@ const ItemsScreen = () => {
     },
   ];
 
-  const filteredData = data.filter((item) =>
+  const addItem = () => {
+    if (newItemName.trim() && newItemDetails.trim()) {
+      const newItem = {
+        id: (items.length + 1).toString(),
+        name: newItemName,
+        details: newItemDetails,
+        image: "https://via.placeholder.com/150"
+      };
+      setItems([...items, newItem]);
+      setNewItemName("");
+      setNewItemDetails("");
+      setShowAddForm(false);
+    }
+  };
+
+  const filteredData = items.filter((item) =>
     item.name.toLowerCase().includes(search.toLowerCase())
   );
 
@@ -68,7 +87,12 @@ const ItemsScreen = () => {
           style={styles.headerIcon}
         />
         <Text style={styles.headerTitle}>ITEMS</Text>
-        <Image source={require("../assets/splash-icon.png")} style={styles.rightIcon} />
+        <TouchableOpacity 
+          style={styles.addButton}
+          onPress={() => setShowAddForm(true)}
+        >
+          <Text style={styles.addButtonText}>+</Text>
+        </TouchableOpacity>
       </View>
 
       {/* Search Bar */}
@@ -87,6 +111,34 @@ const ItemsScreen = () => {
           onChangeText={setSearch}
         />
       </View>
+
+      {/* Add Item Form */}
+      {showAddForm && (
+        <View style={styles.addForm}>
+          <TextInput
+            placeholder="Item Name"
+            placeholderTextColor="#888"
+            style={styles.addInput}
+            value={newItemName}
+            onChangeText={setNewItemName}
+          />
+          <TextInput
+            placeholder="Item Details"
+            placeholderTextColor="#888"
+            style={styles.addInput}
+            value={newItemDetails}
+            onChangeText={setNewItemDetails}
+          />
+          <View style={styles.addButtons}>
+            <TouchableOpacity style={styles.saveButton} onPress={addItem}>
+              <Text style={styles.buttonText}>Save</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.cancelButton} onPress={() => setShowAddForm(false)}>
+              <Text style={styles.buttonText}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
 
       {/* Item List */}
       <FlatList
@@ -225,6 +277,57 @@ const styles = StyleSheet.create({
   itemDetails: {
     color: "#333",
     fontSize: 11,
+  },
+  addButton: {
+    position: "absolute",
+    right: 25,
+    top: 35,
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    width: 40,
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  addButtonText: {
+    fontSize: 24,
+    color: "#E91E63",
+    fontWeight: "bold",
+  },
+  addForm: {
+    backgroundColor: "#2E2E2E",
+    margin: 20,
+    borderRadius: 15,
+    padding: 20,
+  },
+  addInput: {
+    backgroundColor: "#444",
+    color: "#fff",
+    borderRadius: 10,
+    padding: 15,
+    marginBottom: 15,
+  },
+  addButtons: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  saveButton: {
+    backgroundColor: "#4CAF50",
+    padding: 15,
+    borderRadius: 10,
+    flex: 0.45,
+    alignItems: "center",
+  },
+  cancelButton: {
+    backgroundColor: "#F44336",
+    padding: 15,
+    borderRadius: 10,
+    flex: 0.45,
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "#fff",
+    fontWeight: "bold",
   },
 });
 
