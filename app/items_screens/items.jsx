@@ -87,14 +87,6 @@ const ItemsScreen = () => {
           style={styles.headerIcon}
         />
         <Text style={styles.headerTitle}>ITEMS</Text>
-<<<<<<< HEAD:app/items.jsx
-        <TouchableOpacity 
-          style={styles.addButton}
-          onPress={() => setShowAddForm(true)}
-        >
-          <Text style={styles.addButtonText}>+</Text>
-        </TouchableOpacity>
-=======
         <Image source={require("../../assets/splash-icon.png")} style={styles.rightIcon} />
 >>>>>>> d54207fb35da9e1b51e70e7f0d84c9777ff8fc79:app/items_screens/items.jsx
       </View>
