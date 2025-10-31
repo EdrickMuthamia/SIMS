@@ -6,8 +6,6 @@ import {
     TouchableOpacity,
     Image,
     TextInput,
-    KeyboardAvoidingView,
-    Platform,
     ScrollView,
     Dimensions,
     Alert
@@ -51,8 +49,8 @@ export default function ProfileSetup() {
             await AsyncStorage.setItem('userName', name.trim());
             await AsyncStorage.setItem('organizationBio', bio.trim());
 
-            // Navigate to password setup (we'll create this next)
-            router.push("authenitcation_screens/password-setup");
+            // Navigate to password setup
+            router.push("/authenitcation_screens/password-setup");
         } catch (error) {
             Alert.alert("Error", "Something went wrong. Please try again.");
         }
@@ -104,7 +102,7 @@ export default function ProfileSetup() {
                     <Text style={styles.label}>Bio</Text>
                     <TextInput
                         style={styles.bioInput}
-                        placeholder=""
+                        placeholder="Tell us about your organization..."
                         placeholderTextColor="#999"
                         value={bio}
                         onChangeText={(text) => {
