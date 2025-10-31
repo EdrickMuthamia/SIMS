@@ -6,16 +6,16 @@ import {
     TouchableOpacity,
     Image,
     TextInput,
-    KeyboardAvoidingView,
-    Platform,
     ScrollView,
     Dimensions,
-    Alert
+    Alert,
+    ActivityIndicator
 } from "react-native";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API_ENDPOINTS, saveAuthData } from '../../config/api';
 
 const { height } = Dimensions.get("window");
 
@@ -25,6 +25,7 @@ export default function SignIn() {
     const [password, setPassword] = useState("");
     const [rememberMe, setRememberMe] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     // Check if user is already remembered
     useEffect(() => {
@@ -64,43 +65,71 @@ export default function SignIn() {
             return;
         }
 
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
         if (password.length < 8) {
-            Alert.alert("Error", "Password must be atleast 8 charaacters long");
+            Alert.alert("Error", "Password must be at least 8 characters long");
             return;
         }
 
-        if (!passwordRegex.test(password)) {
-            Alert.alert(
-                "Weak Password",
-                "Password must contain:\n• At least 8 characters\n• 1 uppercase letter\n• 1 lowercase letter\n• 1 number\n• 1 special character (@$!%*?&)"
-            );
-            return;
-        }
+        setLoading(true);
 
-        // Remember user if checkbox is checked
         try {
-            if (rememberMe) {
-                await AsyncStorage.setItem('rememberedEmail', email);
-                await AsyncStorage.setItem('rememberedPassword', password);
+            console.log('Attempting login for:', email);
+
+            // Call backend API
+            const response = await fetch(API_ENDPOINTS.SIGNIN, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: email.toLowerCase().trim(),
+                    password: password
+                })
+            });
+
+            const data = await response.json();
+            console.log('Login response:', data);
+
+            if (data.success) {
+                // Save auth data
+                await saveAuthData(data.data);
+
+                // Remember user if checkbox is checked
+                if (rememberMe) {
+                    await AsyncStorage.setItem('rememberedEmail', email);
+                    await AsyncStorage.setItem('rememberedPassword', password);
+                } else {
+                    await AsyncStorage.removeItem('rememberedEmail');
+                    await AsyncStorage.removeItem('rememberedPassword');
+                }
+
+                // Show success message
+                Alert.alert("Success", "Login successful!", [
+                    {
+                        text: "OK",
+                        onPress: () => {
+                            // Navigate to home
+                            router.replace("/welcome_screens/loading");
+                        }
+                    }
+                ]);
             } else {
-                await AsyncStorage.removeItem('rememberedEmail');
-                await AsyncStorage.removeItem('rememberedPassword');
+                // Show error from server
+                Alert.alert("Login Failed", data.message || "Invalid credentials");
             }
 
-            // Store user session
-            await AsyncStorage.setItem('userEmail', email);
-            await AsyncStorage.setItem('isLoggedIn', 'true');
-
-            // Navigate to home
-            router.replace("/welcome_screens/loading");
         } catch (error) {
-            Alert.alert("Error", "Something went wrong. Please try again.");
+            console.error('Login error:', error);
+            Alert.alert(
+                "Connection Error",
+                "Unable to connect to server. Please check your internet connection and try again.\n\nError: " + error.message
+            );
+        } finally {
+            setLoading(false);
         }
     };
 
     const handleSignUp = () => {
-        // Will navigate to sign up page later
         router.push("/authenitcation_screens/signup");
     };
 
@@ -117,6 +146,7 @@ export default function SignIn() {
                     style={styles.backButton}
                     onPress={handleBack}
                     activeOpacity={0.7}
+                    disabled={loading}
                 >
                     <Ionicons name="arrow-back" size={28} color="#fff" />
                 </TouchableOpacity>
@@ -146,6 +176,7 @@ export default function SignIn() {
                         keyboardType="email-address"
                         autoCapitalize="none"
                         autoComplete="email"
+                        editable={!loading}
                     />
 
                     {/* Password Input */}
@@ -159,10 +190,12 @@ export default function SignIn() {
                             onChangeText={setPassword}
                             secureTextEntry={!showPassword}
                             autoCapitalize="none"
+                            editable={!loading}
                         />
                         <TouchableOpacity
                             onPress={() => setShowPassword(!showPassword)}
                             style={styles.eyeIcon}
+                            disabled={loading}
                         >
                             <Ionicons
                                 name={showPassword ? "eye-off" : "eye"}
@@ -178,6 +211,7 @@ export default function SignIn() {
                             style={styles.rememberMeContainer}
                             onPress={() => setRememberMe(!rememberMe)}
                             activeOpacity={0.7}
+                            disabled={loading}
                         >
                             <View style={[styles.checkbox, rememberMe && styles.checkboxChecked]}>
                                 {rememberMe && (
@@ -187,23 +221,35 @@ export default function SignIn() {
                             <Text style={styles.rememberMeText}>Remember Me</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity onPress={() => Alert.alert("Coming Soon", "Password reset feature coming soon!")}>
+                        <TouchableOpacity
+                            onPress={() => Alert.alert("Coming Soon", "Password reset feature coming soon!")}
+                            disabled={loading}
+                        >
                             <Text style={styles.forgotPassword}>Forgot Password?</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
 
-                {/* Login Button - Now outside formContainer */}
+                {/* Login Button */}
                 <TouchableOpacity
-                    style={styles.loginButton}
+                    style={[styles.loginButton, loading && styles.loginButtonDisabled]}
                     onPress={handleLogin}
                     activeOpacity={0.8}
+                    disabled={loading}
                 >
-                    <Text style={styles.loginButtonText}>LOGIN</Text>
+                    {loading ? (
+                        <ActivityIndicator color="#fff" size="small" />
+                    ) : (
+                        <Text style={styles.loginButtonText}>LOGIN</Text>
+                    )}
                 </TouchableOpacity>
 
                 {/* Sign Up Link */}
-                <TouchableOpacity onPress={handleSignUp} style={styles.signUpContainer}>
+                <TouchableOpacity
+                    onPress={handleSignUp}
+                    style={styles.signUpContainer}
+                    disabled={loading}
+                >
                     <Text style={styles.signUpText}>
                         Don't have an account? <Text style={styles.signUpLink}>Sign Up</Text>
                     </Text>
@@ -319,15 +365,20 @@ const styles = StyleSheet.create({
     loginButton: {
         backgroundColor: "#FE005F",
         borderRadius: 25,
-        paddingHorizontal: 80,      // Now this will work!
+        paddingHorizontal: 80,
         paddingVertical: 15,
         alignItems: "center",
+        justifyContent: "center",
         elevation: 4,
         shadowColor: "#FE005F",
         shadowOpacity: 0.3,
         shadowOffset: { width: 0, height: 6 },
         shadowRadius: 10,
         marginTop: 70,
+        minHeight: 50,
+    },
+    loginButtonDisabled: {
+        opacity: 0.6,
     },
     loginButtonText: {
         color: "#fff",

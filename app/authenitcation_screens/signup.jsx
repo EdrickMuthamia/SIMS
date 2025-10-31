@@ -9,8 +9,6 @@ import {
     ScrollView,
     Dimensions,
     Alert,
-    KeyboardAvoidingView,
-    Platform
 } from "react-native";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -44,7 +42,7 @@ export default function SignUp() {
         try {
             await AsyncStorage.setItem('organizationName', organizationName.trim());
             await AsyncStorage.setItem('organizationLocation', organizationLocation.trim());
-            await AsyncStorage.setItem('setupComplete', 'true');
+
             // Navigate to upload page
             router.push("/authenitcation_screens/upload");
         } catch (error) {
