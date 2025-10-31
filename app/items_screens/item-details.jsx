@@ -8,6 +8,7 @@ import {
   ScrollView,
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
+import { COLORS } from "../../constants/theme";
 
 const ItemDetails = () => {
   const router = useRouter();
@@ -125,13 +126,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#121212",
   },
   header: {
-    backgroundColor: "#E91E63",
-    paddingVertical: 50,
-    borderBottomLeftRadius: 35,
-    borderBottomRightRadius: 35,
-    alignItems: "center",
+    backgroundColor: COLORS.primary,
+    borderRadius: 30,
+    height: 150,
     justifyContent: "center",
-    position: "relative",
+    alignItems: "center",
+    marginBottom: 20,
+    marginTop: 50,
   },
   backButton: {
     position: "absolute",
@@ -141,16 +142,16 @@ const styles = StyleSheet.create({
   },
   backArrow: {
     color: "#fff",
-    fontSize: 40,
+    fontSize: 22,
     fontWeight: "bold",
-    bottom: 45,
-    right: 15,
+    bottom: 5,
+    right: 5,
   },
   headerTitle: {
     color: "#fff",
     fontSize: 18,
     fontWeight: "bold",
-    top: 15,
+    top: 2,
   },
   rightIcon: {
     width: 35,

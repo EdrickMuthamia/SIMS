@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
+import { COLORS } from "../../constants/theme";
 
 const Items = () => {
   const router = useRouter();
@@ -308,22 +309,19 @@ const styles = StyleSheet.create({
     paddingTop: 50,
   },
   header: {
-    backgroundColor: "#E91E63",
-    paddingVertical: 50,
-    borderTopLeftRadius: 35,
-    borderTopRightRadius: 35,
-    borderBottomLeftRadius: 35,
-    borderBottomRightRadius: 35,
-    alignItems: "center",
+    backgroundColor: COLORS.primary,
+    borderRadius: 30,
+    height: 150,
     justifyContent: "center",
-    position: "relative",
-    top: -20,
+    alignItems: "center",
+    marginBottom: 20,
+    marginTop: 40,
   },
   headerIcon: {
     width: 70,
     height: 80,
     position: "absolute",
-    left: 170,
+    left: 180,
     top: 10,
   },
   rightIcon: {
@@ -336,19 +334,22 @@ const styles = StyleSheet.create({
   backButton: {
     position: "absolute",
     left: 15,
-    top: 18,
+    top: 55,
+    padding: 10,
   },
   backArrow: {
     color: "#f1eaeaff",
-    fontSize: 40,
+    fontSize: 22,
     fontWeight: "bold",
+    marginBottom: 10,
+    right: 5,
   },
   headerTitle: {
     color: "#fff",
     fontSize: 18,
     fontWeight: "bold",
     top: 40,
-    left: 10,
+    left: 5,
   },
   addButton: {
     backgroundColor: "#E91E63",
