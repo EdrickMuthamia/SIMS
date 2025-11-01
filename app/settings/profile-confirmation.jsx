@@ -6,12 +6,12 @@ export default function ProfileConfirmation() {
 
   const handleDone = () => {
     console.log('Profile confirmation done');
-    router.back(); // Navigate back to previous screen
+    router.push('/settings/acc&settings'); // Navigate back to settings page
   };
 
   const handleClose = () => {
     console.log('Profile confirmation closed');
-    router.back();
+    router.push('/settings/acc&settings');
   };
 
   return (

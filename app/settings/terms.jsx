@@ -1,9 +1,19 @@
 import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
+import { useRouter } from 'expo-router';
 
 export default function Terms() {
+  const router = useRouter();
+
+  const handleBack = () => {
+    router.push('/settings/acc&settings');
+  };
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
+        <TouchableOpacity style={styles.backButton} onPress={handleBack} activeOpacity={0.7}>
+          <Image source={require('../../assets/icons/go-back.png')} style={styles.backIcon} />
+        </TouchableOpacity>
         <Text style={styles.headerText}>TERMS & CONDITIONS</Text>
       </View>
       <View style={styles.content}>
@@ -29,6 +39,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#FE005F',
     paddingVertical: 20,
     alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    paddingTop: 50,
+  },
+  backButton: {
+    position: 'absolute',
+    left: 20,
+    top: 50,
+    padding: 10,
+  },
+  backIcon: {
+    width: 24,
+    height: 24,
+    tintColor: '#FFFFFF',
   },
   headerText: {
     color: '#FFFF00',
