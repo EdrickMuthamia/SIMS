@@ -9,8 +9,11 @@ import {
   StatusBar,
   Image,
   Animated,
+  Alert,
 } from "react-native";
 import { useRouter } from "expo-router";
+import axios from "axios";
+import { API_BASE_URL } from "../../constants/api";
 import { COLORS } from "../../constants/theme";
 
 export default function Requests() {
@@ -18,32 +21,8 @@ export default function Requests() {
   const pulseAnim = useRef(new Animated.Value(1)).current;
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [recents, setRecents] = useState([
-    {
-      serial: "0940F80",
-      name: "LENOVO IDEAPAD",
-      requester: "NAJMA SHAABAN",
-      date: "2 Oct 2025",
-      status: null,
-    },
-  ]);
-
-  const [history, setHistory] = useState([
-    {
-      serial: "0940F80",
-      name: "DELL G16 7630",
-      requester: "WILLIAM KURIA",
-      date: "10 Mar 2024",
-      status: null,
-    },
-    {
-      serial: "0940F80",
-      name: "PREDATOR PRO M612",
-      requester: "EDRICK MUTHAMIA",
-      date: "17 Apr 2025",
-      status: null,
-    },
-  ]);
+  const [recents, setRecents] = useState([]);
+  const [history, setHistory] = useState([]);
 
   useEffect(() => {
     Animated.loop(
@@ -60,32 +39,89 @@ export default function Requests() {
         }),
       ])
     ).start();
+
+    fetchRequests();
   }, []);
 
-  const handleStatusChange = (section, index, newStatus) => {
-    const update = (list, setList) => {
+  const fetchRequests = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/requests`);
+      const allRequests = response.data;
+
+      const recent = allRequests.filter((r) => r.status === "PENDING");
+      const past = allRequests.filter((r) => r.status !== "PENDING");
+
+      setRecents(recent);
+      setHistory(past);
+    } catch (err) {
+      console.error("Failed to fetch requests:", err.message);
+      Alert.alert("Error", "Could not load requests.");
+    }
+  };
+
+  const handleStatusChange = async (section, index, newStatus) => {
+    const list = section === "recents" ? recents : history;
+    const request = list[index];
+
+    try {
+      await axios.patch(`${API_BASE_URL}/requests/${request.request_id}`, {
+        status: newStatus,
+      });
+
       const updated = [...list];
       updated[index].status = newStatus;
-      setList(updated);
-    };
 
-    if (section === "recents") {
-      update(recents, setRecents);
-    } else {
-      update(history, setHistory);
+      if (section === "recents") {
+        const updatedRecents = updated.filter((r) => r.status === "PENDING");
+        const updatedHistory = [...history, ...updated.filter((r) => r.status !== "PENDING")];
+        setRecents(updatedRecents);
+        setHistory(updatedHistory);
+      } else {
+        setHistory(updated);
+      }
+    } catch (err) {
+      console.error("Failed to update status:", err.message);
+      Alert.alert("Error", "Failed to update status");
     }
   };
 
   const filterBySearch = (list) =>
     list.filter((item) =>
-      item.name.toLowerCase().includes(searchQuery.toLowerCase())
+      item.item_name?.toLowerCase().includes(searchQuery.toLowerCase())
     );
+
+  const renderCard = (req, index, section) => (
+    <View key={req.request_id || index} style={styles.card}>
+      <Text style={styles.itemText}>SERIAL ID: {req.serial_id || "—"}</Text>
+      <Text style={styles.itemText}>ITEM: {req.item_name || "—"}</Text>
+      <Text style={styles.itemText}>REQUESTED BY: {req.requester || req.user_id || "—"}</Text>
+      <Text style={styles.itemText}>DUE DATE: {req.due_date?.slice(0, 10) || "—"}</Text>
+      {req.status && (
+        <Text style={[styles.itemText, { fontWeight: "bold" }]}>
+          STATUS: {req.status}
+        </Text>
+      )}
+      <View style={styles.buttonRow}>
+        <TouchableOpacity
+          style={[styles.actionButton, { backgroundColor: COLORS.success }]}
+          onPress={() => handleStatusChange(section, index, "APPROVED")}
+        >
+          <Text style={styles.buttonText}>APPROVE</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.actionButton, { backgroundColor: "#FF3B3B" }]}
+          onPress={() => handleStatusChange(section, index, "DENIED")}
+        >
+          <Text style={styles.buttonText}>DECLINE</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
 
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
 
-   
       <View style={styles.header}>
         <View style={styles.headerTop}>
           <TouchableOpacity onPress={() => router.back()}>
@@ -99,10 +135,7 @@ export default function Requests() {
           />
 
           <Animated.View
-            style={[
-              styles.logoCircle,
-              { transform: [{ scale: pulseAnim }] },
-            ]}
+            style={[styles.logoCircle, { transform: [{ scale: pulseAnim }] }]}
           >
             <Image
               source={require("../../assets/splash-icon.png")}
@@ -115,7 +148,6 @@ export default function Requests() {
         <Text style={styles.headerText}>REQUESTS</Text>
       </View>
 
-    
       <View style={styles.searchBar}>
         <TextInput
           placeholder="Search..."
@@ -127,65 +159,15 @@ export default function Requests() {
       </View>
 
       <ScrollView style={styles.scroll}>
-       
         <Text style={styles.sectionLabel}>RECENTS</Text>
-        {filterBySearch(recents).map((req, index) => (
-          <View key={index} style={styles.card}>
-            <Text style={styles.itemText}>SERIAL ID: {req.serial}</Text>
-            <Text style={styles.itemText}>ITEM: {req.name}</Text>
-            <Text style={styles.itemText}>REQUESTED BY: {req.requester}</Text>
-            <Text style={styles.itemText}>DUE DATE: {req.date}</Text>
-            {req.status && (
-              <Text style={[styles.itemText, { fontWeight: "bold" }]}>
-                STATUS: {req.status}
-              </Text>
-            )}
-            <View style={styles.buttonRow}>
-              <TouchableOpacity
-                style={[styles.actionButton, { backgroundColor: COLORS.success }]}
-                onPress={() => handleStatusChange("recents", index, "APPROVED")}
-              >
-                <Text style={styles.buttonText}>APPROVE</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.actionButton, { backgroundColor: "#FF3B3B" }]}
-                onPress={() => handleStatusChange("recents", index, "DECLINED")}
-              >
-                <Text style={styles.buttonText}>DECLINE</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        ))}
+        {filterBySearch(recents).map((req, index) =>
+          renderCard(req, index, "recents")
+        )}
 
-      
         <Text style={styles.sectionLabel}>REQUEST HISTORY</Text>
-        {filterBySearch(history).map((req, index) => (
-          <View key={index} style={styles.card}>
-            <Text style={styles.itemText}>SERIAL ID: {req.serial}</Text>
-            <Text style={styles.itemText}>ITEM: {req.name}</Text>
-            <Text style={styles.itemText}>REQUESTED BY: {req.requester}</Text>
-            <Text style={styles.itemText}>DATE: {req.date}</Text>
-            {req.status && (
-              <Text style={[styles.itemText, { fontWeight: "bold" }]}>
-                STATUS: {req.status}
-              </Text>
-            )}
-            <View style={styles.buttonRow}>
-              <TouchableOpacity
-                style={[styles.actionButton, { backgroundColor: COLORS.success }]}
-                onPress={() => handleStatusChange("history", index, "APPROVED")}
-              >
-                <Text style={styles.buttonText}>APPROVE</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.actionButton, { backgroundColor: "#FF3B3B" }]}
-                onPress={() => handleStatusChange("history", index, "DECLINED")}
-              >
-                <Text style={styles.buttonText}>DECLINE</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        ))}
+        {filterBySearch(history).map((req, index) =>
+          renderCard(req, index, "history")
+        )}
       </ScrollView>
     </View>
   );
@@ -199,7 +181,7 @@ const styles = StyleSheet.create({
     paddingTop: 40,
     paddingBottom: 30,
     paddingHorizontal: 20,
-    marginTop:40,
+    marginTop: 40,
     alignItems: "center",
   },
   headerTop: {

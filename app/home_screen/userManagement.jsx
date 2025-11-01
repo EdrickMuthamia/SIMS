@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   View,
   Text,
@@ -12,72 +12,94 @@ import {
   Dimensions,
 } from "react-native";
 import { useRouter } from "expo-router";
+import { useFocusEffect } from "@react-navigation/native";
+import axios from "axios";
+import { API_BASE_URL } from "../../constants/api";
 import { COLORS } from "../../constants/theme";
 
 const screenWidth = Dimensions.get("window").width;
 
 export default function UserManagement() {
   const router = useRouter();
-
-  const users = [
-    {
-      serial: "0940FB0",
-      name: "LENOVO IDEAPAD",
-      status: "PENDING",
-      date: "2 Oct 2023",
-      icon: require("../../assets/laptop-icon.png"),
-    },
-    {
-      serial: "0940FB0",
-      name: "DELL G16 7630",
-      status: "DENIED",
-      date: "10 Mar 2024",
-      icon: require("../../assets/desktop-icon.png"),
-    },
-    {
-      serial: "0940FB0",
-      name: "PREDATOR PRO M612",
-      status: "APPROVED",
-      date: "17 Apr 2025",
-      icon: require("../../assets/mouse-icon.png"),
-    },
-  ];
-
+  const [scans, setScans] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const fadeAnims = useRef(users.map(() => new Animated.Value(0))).current;
-  const translateYs = useRef(users.map(() => new Animated.Value(30))).current;
 
-  useEffect(() => {
-    const animations = users.map((_, i) =>
-      Animated.parallel([
-        Animated.timing(fadeAnims[i], {
-          toValue: 1,
-          duration: 600,
-          useNativeDriver: true,
-        }),
-        Animated.timing(translateYs[i], {
-          toValue: 0,
-          duration: 600,
-          useNativeDriver: true,
-        }),
-      ])
-    );
+  const fadeAnims = useRef([]).current;
+  const translateYs = useRef([]).current;
 
-    Animated.stagger(150, animations).start();
-  }, []);
+  const fetchScans = async () => {
+    try {
+      const res = await axios.get(`${API_BASE_URL}/user-management/scans`);
+      const data = res.data || [];
 
-  const filteredUsers = users.filter((user) =>
-    user.name.toLowerCase().includes(searchQuery.toLowerCase())
+      setScans(data);
+
+      fadeAnims.length = 0;
+      translateYs.length = 0;
+      data.forEach(() => {
+        fadeAnims.push(new Animated.Value(0));
+        translateYs.push(new Animated.Value(30));
+      });
+
+      const animations = data.map((_, i) =>
+        Animated.parallel([
+          Animated.timing(fadeAnims[i], {
+            toValue: 1,
+            duration: 600,
+            useNativeDriver: true,
+          }),
+          Animated.timing(translateYs[i], {
+            toValue: 0,
+            duration: 600,
+            useNativeDriver: true,
+          }),
+        ])
+      );
+
+      Animated.stagger(150, animations).start();
+    } catch (err) {
+      console.error("Failed to fetch scan history:", err.message);
+    }
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchScans();
+    }, [])
   );
+
+  const filteredScans = scans.filter((scan) =>
+    scan.item_name?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const getDeviceIcon = (type) => {
+    switch (type?.toLowerCase()) {
+      case "laptop":
+        return require("../../assets/laptop-icon.png");
+      case "desktop":
+        return require("../../assets/desktop-icon.png");
+      case "mouse":
+        return require("../../assets/mouse-icon.png");
+      default:
+        return require("../../assets/laptop-icon.png");
+    }
+  };
+
+  const getBadgeColor = (status) => {
+    const normalized = status?.toUpperCase();
+    if (normalized === "APPROVED") return COLORS.success;
+    if (normalized === "PENDING") return COLORS.warning;
+    if (normalized === "DENIED") return "#FF3B3B";
+    return COLORS.grey;
+  };
 
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
 
-    
       <View style={styles.header}>
         <View style={styles.headerTop}>
-          <TouchableOpacity onPress={() => router.back()}>
+          <TouchableOpacity onPress={() => router.push("/home_screen")}>
             <Text style={styles.backArrow}>←</Text>
           </TouchableOpacity>
           <Image
@@ -96,7 +118,6 @@ export default function UserManagement() {
         <Text style={styles.headerText}>USER MANAGEMENT</Text>
       </View>
 
-     
       <View style={styles.searchBar}>
         <TextInput
           placeholder="SEARCH –"
@@ -107,69 +128,72 @@ export default function UserManagement() {
         />
       </View>
 
-      
       <Text style={styles.scanLabel}>SCAN HISTORY</Text>
 
-    
+      <TouchableOpacity onPress={fetchScans} style={styles.refreshButton}>
+        <Text style={styles.refreshText}>↻ Refresh</Text>
+      </TouchableOpacity>
+
       <ScrollView contentContainerStyle={styles.scrollArea}>
-        {filteredUsers.map((user, i) => (
-          <Animated.View
-            key={i}
-            style={[
-              styles.card,
-              {
-                opacity: fadeAnims[i],
-                transform: [{ translateY: translateYs[i] }],
-              },
-            ]}
-          >
-            <View style={styles.iconCircle}>
-              <Image
-                source={user.icon}
-                style={styles.deviceIcon}
-                resizeMode="contain"
-              />
-            </View>
-            <View style={styles.cardContent}>
-              <Text style={styles.deviceName}>{user.name}</Text>
-              <Text style={styles.metaText}>SCANNED ON: {user.date}</Text>
-              <Text style={styles.metaText}>SERIAL ID: {user.serial}</Text>
-            </View>
-            <TouchableOpacity
+        {filteredScans.map((scan, i) => {
+          const normalizedStatus = scan.status?.toUpperCase() || "UNKNOWN";
+          const badgeColor = getBadgeColor(normalizedStatus);
+
+          return (
+            <Animated.View
+              key={scan.scan_id || i}
               style={[
-                styles.statusBadge,
+                styles.card,
                 {
-                  backgroundColor:
-                    user.status === "APPROVED"
-                      ? COLORS.success
-                      : user.status === "PENDING"
-                      ? COLORS.warning
-                      : "#FF3B3B",
+                  opacity: fadeAnims[i],
+                  transform: [{ translateY: translateYs[i] }],
                 },
               ]}
-              onPress={() => router.push("/status")}
             >
-              <Text style={styles.statusText}>{user.status}</Text>
-            </TouchableOpacity>
-          </Animated.View>
-        ))}
+              <View style={styles.iconCircle}>
+                <Image
+                  source={getDeviceIcon(scan.device_type)}
+                  style={styles.deviceIcon}
+                  resizeMode="contain"
+                />
+              </View>
+              <View style={styles.cardContent}>
+                <Text style={styles.deviceName}>{scan.item_name}</Text>
+                <Text style={styles.metaText}>
+                  SCANNED ON:{" "}
+                  {scan.scanned_at
+                    ? new Date(scan.scanned_at).toDateString()
+                    : "Unknown"}
+                </Text>
+                <Text style={styles.metaText}>
+                  SERIAL ID: {scan.serial_id || "N/A"}
+                </Text>
+              </View>
+              <TouchableOpacity
+                style={[styles.statusBadge, { backgroundColor: badgeColor }]}
+                onPress={() => router.push("/status")}
+              >
+                <Text style={styles.statusText}>{normalizedStatus}</Text>
+              </TouchableOpacity>
+            </Animated.View>
+          );
+        })}
       </ScrollView>
 
-     
       <View style={styles.navBar}>
-        <TouchableOpacity onPress={() => router.push("/scan")}>
+        <TouchableOpacity onPress={() => router.push("scanner_screens/scan")}>
           <Image
             source={require("../../assets/scan-icon.png")}
             style={styles.navIcon}
           />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => router.push("/home")}>
+        <TouchableOpacity onPress={() => router.push("items_screens/items")}>
           <Image
             source={require("../../assets/home-icon.png")}
             style={styles.navIcon}
           />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => router.push("/profile")}>
+        <TouchableOpacity onPress={() => router.push("user_screens/users")}>
           <Image
             source={require("../../assets/person-icon.png")}
             style={styles.navIcon}
@@ -179,7 +203,6 @@ export default function UserManagement() {
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.black },
   header: {
