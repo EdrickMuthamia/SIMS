@@ -10,25 +10,43 @@ import {
 } from "react-native";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { useRouter } from "expo-router";
+import { scannerService } from "../../services/scannerService";
 
 const Scanner = () => {
   const router = useRouter();
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
 
-  const handleBarCodeScanned = ({ type, data }) => {
+  const handleBarCodeScanned = async ({ type, data }) => {
     setScanned(true);
     
-    // Navigate to assetBorrow page with scanned data
-    router.push({
-      pathname: 'scanner_screens/assetBorrow',
-      params: {
-        serialId: data,
-        itemName: `Scanned Item: ${data}`,
-        borrowStatus: "Unknown",
-        condition: `Scanned data: ${data}\nScan type: ${type}\nScanned at: ${new Date().toLocaleString()}`
-      }
-    });
+    try {
+      // Call your backend to get item details
+      const itemData = await scannerService.scanItem(data);
+      
+      // Navigate to assetBorrow page with real backend data
+      router.push({
+        pathname: 'scanner_screens/assetBorrow',
+        params: {
+          serialId: itemData.serial_id,
+          itemName: itemData.item_name,
+          borrowStatus: itemData.borrow_status,
+          condition: itemData.condition,
+          itemId: itemData.item_id,
+          assignedTo: itemData.assigned_to,
+          imageUrl: itemData.image_url
+        }
+      });
+    } catch (error) {
+      console.error('Scan error:', error);
+      Alert.alert(
+        'Scan Error',
+        'Item not found or server error. Please try again.',
+        [
+          { text: 'OK', onPress: () => setScanned(false) }
+        ]
+      );
+    }
   };
 
 
