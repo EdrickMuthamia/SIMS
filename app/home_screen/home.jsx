@@ -12,6 +12,8 @@ import {
   Animated,
 } from "react-native";
 import { useRouter } from "expo-router";
+import axios from "axios";
+import { API_BASE_URL } from "../../constants/api";
 import { COLORS } from "../../constants/theme";
 
 const screenWidth = Dimensions.get("window").width;
@@ -23,9 +25,11 @@ export default function OrganizationDetails() {
   const translateY = useRef(new Animated.Value(30)).current;
   const pulseAnim = useRef(new Animated.Value(1)).current;
 
-  const [companyLogo, setCompanyLogo] = useState(null); 
+  const [org, setOrg] = useState(null);
+  const orgId = "b3c415c1-9efe-408e-912c-98609d0b1e06";
 
   useEffect(() => {
+    // Entry animation
     Animated.stagger(150, [
       Animated.parallel([
         Animated.timing(fadeAnim, {
@@ -41,6 +45,7 @@ export default function OrganizationDetails() {
       ]),
     ]).start();
 
+    // Pulse animation for logo
     Animated.loop(
       Animated.sequence([
         Animated.timing(pulseAnim, {
@@ -55,11 +60,35 @@ export default function OrganizationDetails() {
         }),
       ])
     ).start();
+
+    // Fetch organization data
+    const fetchOrg = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/organization/${orgId}`);
+        setOrg({
+          name: response.data.org_name,
+          logo_url: response.data.org_picture,
+        });
+      } catch (err) {
+        console.error("Failed to fetch organization:", err.message);
+      }
+    };
+
+    fetchOrg();
   }, []);
 
-  const uploadLogo = () => {
-    
-    setCompanyLogo(require("../../assets/company-logo.png")); 
+  const logoSource = org?.logo_url
+    ? { uri: org.logo_url }
+    : require("../../assets/icon.png");
+
+  const handleNavigation = (label) => {
+    if (label === "REQUESTS") {
+      router.push("/home_screen/requests");
+    } else if (label === "USER MANAGEMENT") {
+      router.push("/home_screen/userManagement");
+    } else if (label === "ITEMS") {
+      router.push("/items_screens/items");
+    }
   };
 
   return (
@@ -68,25 +97,21 @@ export default function OrganizationDetails() {
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.header}>
           <View style={styles.headerTop}>
-          
-            <TouchableOpacity style={styles.menuIcon} onPress={() => router.push("menu_screens/menu")}>
+            {/* Menu icon */}
+            <TouchableOpacity
+              style={styles.menuIcon}
+              onPress={() => router.push("menu_screens/menu")}
+            >
               <Text style={styles.menuLine}>☰</Text>
             </TouchableOpacity>
 
-         
-            <TouchableOpacity onPress={uploadLogo} style={styles.logoWrapper}>
+            {/* Logo */}
+            <TouchableOpacity style={styles.logoWrapper}>
               <Animated.View
-                style={[
-                  styles.logoCircle,
-                  { transform: [{ scale: pulseAnim }] },
-                ]}
+                style={[styles.logoCircle, { transform: [{ scale: pulseAnim }] }]}
               >
                 <Image
-                  source={
-                    companyLogo
-                      ? companyLogo
-                      : require("../../assets/icon.png") 
-                  }
+                  source={logoSource}
                   style={styles.headerIcon}
                   resizeMode="contain"
                 />
@@ -100,6 +125,7 @@ export default function OrganizationDetails() {
               </Animated.View>
             </TouchableOpacity>
 
+            {/* Splash icon */}
             <Image
               source={require("../../assets/splash-icon.png")}
               style={styles.logo}
@@ -107,9 +133,12 @@ export default function OrganizationDetails() {
             />
           </View>
 
-          <Text style={styles.headerText}>ORGANIZATIONS DETAILS</Text>
+          <Text style={styles.headerText}>
+            {org?.name?.toUpperCase() || "ORGANIZATION DETAILS"}
+          </Text>
         </View>
 
+        {/* Cards Section */}
         <View style={styles.cardsContainer}>
           {["REQUESTS", "USER MANAGEMENT", "ITEMS"].map((label) => (
             <Animated.View
@@ -124,15 +153,7 @@ export default function OrganizationDetails() {
             >
               <TouchableOpacity
                 style={styles.cardTouchable}
-                onPress={() =>
-                  router.push(
-                    label === "REQUESTS"
-                      ? "/home_screen/requests"
-                      : label === "USER MANAGEMENT"
-                      ? "/home_screen/userManagement"
-                      : "/items_screens/items"
-                  )
-                }
+                onPress={() => handleNavigation(label)}
               >
                 <Text style={styles.cardText}>{label}</Text>
               </TouchableOpacity>
@@ -155,7 +176,7 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: COLORS.primary || "#D4145A",
-    borderRadius: 20, 
+    borderRadius: 20,
     paddingTop: 40,
     paddingBottom: 40,
     marginHorizontal: 20,
