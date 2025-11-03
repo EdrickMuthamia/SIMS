@@ -1,9 +1,14 @@
 import { View, Text, TouchableOpacity, StyleSheet, Image, Switch, ScrollView } from 'react-native';
 import { useState } from 'react';
+import { useRouter } from 'expo-router';
 
 export default function Security() {
+  const router = useRouter();
   const [twoFactor, setTwoFactor] = useState(false);
-  const [changePassword, setChangePassword] = useState(false);
+
+  const handleBack = () => {
+    router.push('/settings/acc&settings');
+  };
 
   const devices = [
     { name: 'iPhone 16 Pro Max', icon: require('../../assets/icons/iPhone  16 Pro max.png') },
@@ -14,18 +19,25 @@ export default function Security() {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
+        <TouchableOpacity style={styles.backButton} onPress={handleBack} activeOpacity={0.7}>
+          <Image source={require('../../assets/icons/go-back.png')} style={styles.backIcon} />
+        </TouchableOpacity>
         <Text style={styles.headerText}>SECURITY SETTINGS</Text>
       </View>
       <View style={styles.content}>
-        <TouchableOpacity style={styles.button} onPress={() => console.log('Two-Factor Authentication pressed')} activeOpacity={0.7}>
+        <TouchableOpacity style={styles.button} onPress={() => router.push('/settings/two-factor-setup')} activeOpacity={0.7}>
           <Image source={require('../../assets/icons/Two-Factor  Authentication.png')} style={styles.icon} />
           <Text style={styles.buttonText}>Two-Factor Authentication</Text>
-          <Switch value={twoFactor} onValueChange={setTwoFactor} />
+          <Switch value={twoFactor} onValueChange={(value) => {
+            setTwoFactor(value);
+            if (value) {
+              router.push('/settings/two-factor-setup');
+            }
+          }} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => console.log('Change Password pressed')} activeOpacity={0.7}>
+        <TouchableOpacity style={styles.button} onPress={() => router.push('/settings/change-password')} activeOpacity={0.7}>
           <Image source={require('../../assets/icons/Change  Password.png')} style={styles.icon} />
           <Text style={styles.buttonText}>Change Password</Text>
-          <Switch value={changePassword} onValueChange={setChangePassword} />
         </TouchableOpacity>
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>MY DEVICES</Text>
@@ -53,6 +65,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#FE005F',
     paddingVertical: 20,
     alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    paddingTop: 50,
+  },
+  backButton: {
+    position: 'absolute',
+    left: 20,
+    top: 50,
+    padding: 10,
+  },
+  backIcon: {
+    width: 24,
+    height: 24,
+    tintColor: '#FFFFFF',
   },
   headerText: {
     color: '#FFFF00',

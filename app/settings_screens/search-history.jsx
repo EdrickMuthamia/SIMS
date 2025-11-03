@@ -1,12 +1,18 @@
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert, Image } from 'react-native';
 import { useState } from 'react';
+import { useRouter } from 'expo-router';
 
 export default function SearchHistory() {
+  const router = useRouter();
   const [history, setHistory] = useState([
     'Search 1: React Native',
     'Search 2: Expo Router',
     'Search 3: Privacy Settings',
   ]);
+
+  const handleBack = () => {
+    router.push('/settings/acc&settings');
+  };
 
   const clearHistory = () => {
     Alert.alert(
@@ -22,6 +28,9 @@ export default function SearchHistory() {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
+        <TouchableOpacity style={styles.backButton} onPress={handleBack} activeOpacity={0.7}>
+          <Image source={require('../../assets/icons/go-back.png')} style={styles.backIcon} />
+        </TouchableOpacity>
         <Text style={styles.headerText}>SEARCH HISTORY</Text>
       </View>
       <View style={styles.content}>
@@ -51,6 +60,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#FE005F',
     paddingVertical: 20,
     alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    paddingTop: 50,
+  },
+  backButton: {
+    position: 'absolute',
+    left: 20,
+    top: 50,
+    padding: 10,
+  },
+  backIcon: {
+    width: 24,
+    height: 24,
+    tintColor: '#FFFFFF',
   },
   headerText: {
     color: '#FFFF00',
