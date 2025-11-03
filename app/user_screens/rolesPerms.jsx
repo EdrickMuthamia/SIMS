@@ -6,61 +6,48 @@ import {
   ScrollView,
   StyleSheet,
   Image,
+  ActivityIndicator,
 } from "react-native";
 import { useRouter, useLocalSearchParams, useFocusEffect } from "expo-router";
 import { COLORS } from "../../constants/theme";
 
-export const roles = [
-      {
-      name: "Admin",
-      description: "Full system access, manage all users & settings",
-      color: "#436ab1ff",
-    },
-    {
-      name: "Manager",
-      description: "Oversees inventory, Approve orders",
-      color: "#F3B52E",
-    },
-    {
-      name: "Staff",
-      description: "Add/View Inventory, manage tasks",
-      color: "#50C878",
-    },
-    {
-      name: "Vendor",
-      description: "Create and track purchase order",
-      color: "#E74C3C",
-    },
-]
+//import backend function
+
+import { fetchroles } from "../../services/rolesPermsInstance";
 
 export default function RolesPermissions() {
   const router = useRouter();
   const params = useLocalSearchParams();
 
-  const [roles, setRoles] = useState([
-    {
-      name: "Admin",
-      description: "Full system access, manage all users & settings",
-      color: "#436ab1ff",
-    },
-    {
-      name: "Manager",
-      description: "Oversees inventory, Approve orders",
-      color: "#F3B52E",
-    },
-    {
-      name: "Staff",
-      description: "Add/View Inventory, manage tasks",
-      color: "#50C878",
-    },
-    {
-      name: "Vendor",
-      description: "Create and track purchase order",
-      color: "#E74C3C",
-    },
-  ]);
+  const [roles, setRoles] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // When returning from AddRole, add the new role to the list
+  // Fetch roles from backend when screen loads
+  const loadRoles = async () => {
+    try {
+      setLoading(true);
+      const data = await fetchroles();
+      // optional: map backend data to the structure your UI expects
+      const formatted = data.map((r) => ({
+        name: r.role_name,
+        description: r.description || "No description provided",
+        color: "#436ab1ff", // you can assign colors dynamically later
+      }));
+      setRoles(formatted);
+    } catch (error) {
+      console.error("Error loading roles:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      loadRoles();
+    }, [])
+  );
+
+  // Add role dynamically after navigating back from addRole
   useFocusEffect(
     useCallback(() => {
       if (params?.newRole) {
@@ -104,24 +91,33 @@ export default function RolesPermissions() {
           <Text style={styles.addButtonText}>+ Add New Role</Text>
         </TouchableOpacity>
 
-        {roles.map((role) => (
-          <View key={role.name} style={styles.roleCard}>
-            <Text style={[styles.roleName, { color: role.color }]}>{role.name}</Text>
-            <Text style={styles.roleDescription}>{role.description}</Text>
+        {/* Loading Indicator */}
+        {loading ? (
+          <ActivityIndicator size="large" color={COLORS.primary} style={{ marginTop: 20 }} />
+        ) : roles.length === 0 ? (
+          <Text style={{ color: "#ccc", textAlign: "center", marginTop: 20 }}>
+            No roles found.
+          </Text>
+        ) : (
+          roles.map((role) => (
+            <View key={role.name} style={styles.roleCard}>
+              <Text style={[styles.roleName, { color: role.color }]}>{role.name}</Text>
+              <Text style={styles.roleDescription}>{role.description}</Text>
 
-            <TouchableOpacity
-              style={styles.permissionButton}
-              onPress={() =>
-                router.push({
-                  pathname: "user_screens/edit_perms",
-                  params: { role: role.name },
-                })
-              }
-            >
-              <Text style={styles.permissionButtonText}>Edit Permissions</Text>
-            </TouchableOpacity>
-          </View>
-        ))}
+              <TouchableOpacity
+                style={styles.permissionButton}
+                onPress={() =>
+                  router.push({
+                    pathname: "user_screens/edit_perms",
+                    params: { role: role.name },
+                  })
+                }
+              >
+                <Text style={styles.permissionButtonText}>Edit Permissions</Text>
+              </TouchableOpacity>
+            </View>
+          ))
+        )}
       </ScrollView>
     </View>
   );

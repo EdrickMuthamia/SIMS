@@ -13,7 +13,7 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import { COLORS } from "../../../constants/theme";
-import { roles } from "../roles&perms";
+import { roles } from "../rolesPerms";
 
 export default function AddUserStep1() {
   const router = useRouter();

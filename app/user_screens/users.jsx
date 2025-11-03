@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -9,69 +9,20 @@ import {
   StyleSheet,
   TextInput,
   Modal,
+  Alert,
+  ActivityIndicator,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { COLORS } from "../../constants/theme";
-import { Alert } from "react-native";
+
+// Import your API helper functions
+import { fetchUsers, updateUser, deleteUser } from "../../services/userInstance";
 
 export default function UsersScreen() {
   const router = useRouter();
 
-  const [users, setUsers] = useState([
-    {
-      id: 1,
-      name: "Ramsey Anyona",
-      role: "Admin",
-      email: "ramseyanjona@gmail.com",
-      joined: "20 Mar 2025",
-      color: "#F3B52E",
-      department: "IT",
-      branch: "Nairobi HQ",
-      phone: "+254712345678",
-      status: "Active",
-      image: null,
-    },
-    {
-      id: 2,
-      name: "Najma Shaban",
-      role: "Manager",
-      email: "najmashaban@gmail.com",
-      joined: "1 Oct 2025",
-      color: "#F3B52E",
-      department: "Procurement",
-      branch: "Mombasa Branch",
-      phone: "+254700111222",
-      status: "Active",
-      image: null,
-    },
-    {
-      id: 3,
-      name: "Edrick Muthamia",
-      role: "Staff",
-      email: "edrickmuthamia@gmail.com",
-      joined: "15 Oct 2025",
-      color: "#F3B52E",
-      department: "Finance",
-      branch: "Nakuru Office",
-      phone: "+254701223344",
-      status: "Suspended",
-      image: null,
-    },
-    {
-      id: 4,
-      name: "Apple Reseller",
-      role: "Vendor",
-      email: "contact@applereseller.com",
-      joined: "21 Oct 2025",
-      color: "#F3B52E",
-      department: "Vendors",
-      branch: "External Partner",
-      phone: "+254700987654",
-      status: "Active",
-      image: null,
-    },
-  ]);
-
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [infoModalVisible, setInfoModalVisible] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -79,11 +30,28 @@ export default function UsersScreen() {
   const [editEmail, setEditEmail] = useState("");
   const [editImage, setEditImage] = useState(null);
 
+  // Fetch users on mount
+  useEffect(() => {
+    const loadUsers = async () => {
+      try {
+        setLoading(true);
+        const data = await fetchUsers();
+        setUsers(data);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+        Alert.alert("Error", "Failed to load users from server.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadUsers();
+  }, []);
+
   const openEditModal = (user) => {
     setSelectedUser(user);
-    setEditName(user.name);
+    setEditName(user.full_name);
     setEditEmail(user.email);
-    setEditImage(user.image || null);
+    setEditImage(user.user_pic || null);
     setEditModalVisible(true);
   };
 
@@ -109,34 +77,64 @@ export default function UsersScreen() {
     setEditImage(null);
   };
 
-  const saveChanges = () => {
-    setUsers((prev) =>
-      prev.map((u) =>
-        u.id === selectedUser.id
-          ? { ...u, name: editName, email: editEmail, image: editImage }
-          : u
-      )
-    );
-    setEditModalVisible(false);
-  };
-        // Delete user
-   const handleRemoveUser = (id) => {
-        Alert.alert(
-        "Confirm Delete",
-        "Are you sure you want to remove the most recently viewed user?",
-       [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "Remove",
-        style: "destructive",
-        onPress: () => {
-          setUsers((prev) => prev.filter((user) => user.id !== id));
-        },
-      },
-       ]
-     );
-    };
+  // Save changes to backend
+  const saveChanges = async () => {
+    try {
+      if (!selectedUser) return;
+      const updated = {
+        full_name: editName,
+        email: editEmail,
+        user_pic: editImage,
+      };
+      await updateUser(selectedUser.user_id, updated);
 
+      setUsers((prev) =>
+        prev.map((u) =>
+          u.user_id === selectedUser.user_id ? { ...u, ...updated } : u
+        )
+      );
+
+      setEditModalVisible(false);
+      Alert.alert("Success", "User details updated successfully.");
+    } catch (error) {
+      console.error("Error updating user:", error);
+      Alert.alert("Error", "Failed to update user details.");
+    }
+  };
+
+  // Delete user via backend
+  const handleRemoveUser = async (id) => {
+    Alert.alert(
+      "Confirm Delete",
+      "Are you sure you want to remove this user?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Remove",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await deleteUser(id);
+              setUsers((prev) => prev.filter((user) => user.user_id !== id));
+              Alert.alert("Deleted", "User removed successfully.");
+            } catch (error) {
+              console.error("Error deleting user:", error);
+              Alert.alert("Error", "Failed to delete user.");
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#111" }}>
+        <ActivityIndicator size="large" color={COLORS.primary} />
+        <Text style={{ color: "#fff", marginTop: 10 }}>Loading users...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -144,7 +142,11 @@ export default function UsersScreen() {
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backArrow}
+
+          onPress={() => router.push("/")}
+
           onPress={() => router.push("home_screen/userManagement")}
+
         >
           <Text style={styles.backText}>←</Text>
         </TouchableOpacity>
@@ -221,7 +223,7 @@ export default function UsersScreen() {
       <View style={styles.footer}>
         <TouchableOpacity
           style={styles.footerButtonBlue}
-          onPress={() => router.push("user_screens/roles&perms")}
+          onPress={() => router.push("user_screens/rolesPerms")}
         >
           <Text style={styles.footerButtonText}>View permission settings</Text>
         </TouchableOpacity>
