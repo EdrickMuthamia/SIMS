@@ -41,6 +41,7 @@ const AssetBorrowScreen = () => {
           >
             <Text style={styles.backArrow}>←</Text>
           </TouchableOpacity>
+
           <Image
             source={require("../../assets/icon.png")}
             style={styles.headerIcon}
@@ -51,6 +52,7 @@ const AssetBorrowScreen = () => {
             style={styles.rightIcon}
           />
         </View>
+
         <Text style={styles.sectionTitle}>ASSET INFORMATION</Text>
 
         <View style={styles.inputGroup}>

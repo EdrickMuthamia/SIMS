@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -19,11 +19,11 @@ const Scanner = () => {
 
   const handleBarCodeScanned = async ({ type, data }) => {
     setScanned(true);
-    
+
     try {
       // Call your backend to get item details
       const itemData = await scannerService.scanItem(data);
-      
+
       // Navigate to assetBorrow page with real backend data
       router.push({
         pathname: "scanner_screens/assetBorrow",
@@ -34,17 +34,15 @@ const Scanner = () => {
           condition: itemData.condition,
           itemId: itemData.item_id,
           assignedTo: itemData.assigned_to,
-          imageUrl: itemData.image_url
-        }
+          imageUrl: itemData.image_url,
+        },
       });
     } catch (error) {
-      console.error('Scan error:', error);
+      console.error("Scan error:", error);
       Alert.alert(
-        'Scan Error',
-        'Item not found or server error. Please try again.',
-        [
-          { text: 'OK', onPress: () => setScanned(false) }
-        ]
+        "Scan Error",
+        "Item not found or server error. Please try again.",
+        [{ text: "OK", onPress: () => setScanned(false) }]
       );
     }
   };
@@ -80,11 +78,11 @@ const Scanner = () => {
         >
           <Text style={styles.backArrow}>←</Text>
         </TouchableOpacity>
+
         <Image
           source={require("../../assets/icon.png")}
           style={styles.headerIcon}
         />
-
         <Image
           source={require("../../assets/splash-icon.png")}
           style={styles.rightIcon}
@@ -113,7 +111,7 @@ const Scanner = () => {
             </View>
           </CameraView>
         </View>
-        <Text style={styles.instruction}>SCAN THE QR CODE/ BARCODE</Text>
+        <Text style={styles.instruction}>SCAN THE QR CODE / BARCODE</Text>
       </View>
     </View>
   );
@@ -253,7 +251,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   buttonText: {
-    color: "#b10e0eff",
+    color: "#fff",
     fontSize: 16,
   },
 });
