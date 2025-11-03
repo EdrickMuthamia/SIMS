@@ -142,7 +142,11 @@ export default function UsersScreen() {
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backArrow}
+
           onPress={() => router.push("/")}
+
+          onPress={() => router.push("home_screen/userManagement")}
+
         >
           <Text style={styles.backText}>←</Text>
         </TouchableOpacity>

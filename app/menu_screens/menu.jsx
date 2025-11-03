@@ -62,7 +62,7 @@ export default function MenuScreen() {
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.closeIcon}
-          onPress={() => router.push("/")}
+          onPress={() => router.push("/home_screen/home")}
         >
           <Text style={styles.closeText}>✕</Text>
         </TouchableOpacity>
@@ -81,11 +81,11 @@ export default function MenuScreen() {
 
       {/* Menu */}
       <View style={styles.menuContent}>
-        {["Orders", "Vendors", "Settings", "History"].map((item) => (
+        {["Orders", "Vendors", "settings", "History"].map((item) => (
           <TouchableOpacity
             key={item}
             style={styles.menuButton}
-            onPress={() => router.push(`menu_screens/${item.toLowerCase()}`)}
+            onPress={() => router.push(`settings_screens/${item.toLowerCase()}`)}
           >
             <Text style={styles.menuText}>{item}</Text>
           </TouchableOpacity>
