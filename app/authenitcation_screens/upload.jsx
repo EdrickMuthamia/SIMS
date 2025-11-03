@@ -7,19 +7,22 @@ import {
     Image,
     Alert,
     Dimensions,
-    Platform
+    Platform,
+    ActivityIndicator
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
+import { uploadFile } from '../../config/api';
 
 const { height } = Dimensions.get("window");
 
 export default function Upload() {
     const router = useRouter();
     const [selectedImage, setSelectedImage] = useState(null);
+    const [uploading, setUploading] = useState(false);
 
     // Request permissions on mount
     React.useEffect(() => {
@@ -66,11 +69,11 @@ export default function Upload() {
                 mediaTypes: ImagePicker.MediaTypeOptions.Images,
                 allowsEditing: true,
                 aspect: [1, 1],
-                quality: 1,
+                quality: 0.8,
             });
 
             if (!result.canceled) {
-                setSelectedImage(result.assets[0].uri);
+                setSelectedImage(result.assets[0]);
             }
         } catch (error) {
             Alert.alert("Error", "Failed to open camera");
@@ -83,11 +86,11 @@ export default function Upload() {
                 mediaTypes: ImagePicker.MediaTypeOptions.Images,
                 allowsEditing: true,
                 aspect: [1, 1],
-                quality: 1,
+                quality: 0.8,
             });
 
             if (!result.canceled) {
-                setSelectedImage(result.assets[0].uri);
+                setSelectedImage(result.assets[0]);
             }
         } catch (error) {
             Alert.alert("Error", "Failed to open gallery");
@@ -95,17 +98,68 @@ export default function Upload() {
     };
 
     const handleProceed = async () => {
-        if (!selectedImage) {
-            Alert.alert("Photo Required", "Please upload an organization photo before proceeding");
-            return;
+        let photoUrl = null;
+
+        // If user selected an image, upload it first
+        if (selectedImage) {
+            setUploading(true);
+            try {
+                const fileName = `org-${Date.now()}.jpg`;
+                const { response, data } = await uploadFile(selectedImage.uri, fileName);
+
+                if (data.success) {
+                    photoUrl = data.data.url;
+                    console.log('Photo uploaded successfully:', photoUrl);
+                } else {
+                    Alert.alert("Upload Failed", "Failed to upload photo, but you can continue without it.");
+                }
+            } catch (error) {
+                console.error('Upload error:', error);
+                Alert.alert(
+                    "Upload Error",
+                    "Could not upload photo to server. Continue anyway?",
+                    [
+                        { text: "Go Back", style: "cancel" },
+                        {
+                            text: "Continue Without Photo",
+                            onPress: () => proceedToNext(null)
+                        }
+                    ]
+                );
+                setUploading(false);
+                return;
+            } finally {
+                setUploading(false);
+            }
         }
 
-        try{
-            await AsyncStorage.setItem('organizationPhoto', selectedImage);
+        proceedToNext(photoUrl);
+    };
+
+    const proceedToNext = async (photoUrl) => {
+        try {
+            // Save photo URL to AsyncStorage
+            await AsyncStorage.setItem('organizationPhoto', photoUrl || '');
+
+            // Navigate to profile setup
             router.push("/authenitcation_screens/profile-setup");
         } catch (error) {
             Alert.alert("Error", "Something went wrong. Please try again.");
         }
+    };
+
+    const handleSkip = () => {
+        Alert.alert(
+            "Skip Photo Upload",
+            "Are you sure you want to skip uploading an organization photo?",
+            [
+                { text: "Cancel", style: "cancel" },
+                {
+                    text: "Skip",
+                    onPress: () => proceedToNext(null)
+                }
+            ]
+        );
     };
 
     return (
@@ -117,6 +171,7 @@ export default function Upload() {
                 style={styles.backButton}
                 onPress={handleBack}
                 activeOpacity={0.7}
+                disabled={uploading}
             >
                 <Ionicons name="arrow-back" size={28} color="#fff" />
             </TouchableOpacity>
@@ -130,16 +185,18 @@ export default function Upload() {
 
             {/* Title */}
             <Text style={styles.title}>UPLOAD ORGANIZATION PHOTO</Text>
+            <Text style={styles.subtitle}>(Optional)</Text>
 
             {/* Upload Circle */}
             <TouchableOpacity
                 style={styles.uploadCircle}
                 onPress={showImagePickerOptions}
                 activeOpacity={0.8}
+                disabled={uploading}
             >
                 {selectedImage ? (
                     <Image
-                        source={{ uri: selectedImage }}
+                        source={{ uri: selectedImage.uri }}
                         style={styles.uploadedImage}
                     />
                 ) : (
@@ -150,14 +207,37 @@ export default function Upload() {
                 )}
             </TouchableOpacity>
 
-            {/* Proceed Button */}
-            <TouchableOpacity
-                style={styles.proceedButton}
-                onPress={handleProceed}
-                activeOpacity={0.8}
-            >
-                <Text style={styles.proceedButtonText}>PROCEED</Text>
-            </TouchableOpacity>
+            {uploading && (
+                <View style={styles.uploadingContainer}>
+                    <ActivityIndicator size="large" color="#FE005F" />
+                    <Text style={styles.uploadingText}>Uploading photo...</Text>
+                </View>
+            )}
+
+            {/* Buttons */}
+            <View style={styles.buttonContainer}>
+                <TouchableOpacity
+                    style={[styles.proceedButton, uploading && styles.buttonDisabled]}
+                    onPress={handleProceed}
+                    activeOpacity={0.8}
+                    disabled={uploading}
+                >
+                    <Text style={styles.proceedButtonText}>
+                        {selectedImage ? 'UPLOAD & PROCEED' : 'PROCEED'}
+                    </Text>
+                </TouchableOpacity>
+
+                {!selectedImage && (
+                    <TouchableOpacity
+                        style={styles.skipButton}
+                        onPress={handleSkip}
+                        activeOpacity={0.8}
+                        disabled={uploading}
+                    >
+                        <Text style={styles.skipButtonText}>SKIP FOR NOW</Text>
+                    </TouchableOpacity>
+                )}
+            </View>
         </View>
     );
 }
@@ -180,15 +260,21 @@ const styles = StyleSheet.create({
     logo: {
         width: 180,
         height: 180,
-        marginBottom: 30,
+        marginBottom: 20,
     },
     title: {
         color: "#FFA500",
         fontSize: 16,
         fontWeight: "700",
         textAlign: "center",
-        marginBottom: 50,
+        marginBottom: 5,
         letterSpacing: 1,
+    },
+    subtitle: {
+        color: "#999",
+        fontSize: 12,
+        textAlign: "center",
+        marginBottom: 40,
     },
     uploadCircle: {
         width: 150,
@@ -197,7 +283,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#E5E5E5",
         justifyContent: "center",
         alignItems: "center",
-        marginBottom: 60,
+        marginBottom: 30,
         overflow: "hidden",
     },
     uploadedImage: {
@@ -220,6 +306,21 @@ const styles = StyleSheet.create({
         bottom: -5,
         right: -5,
     },
+    uploadingContainer: {
+        alignItems: "center",
+        marginBottom: 20,
+    },
+    uploadingText: {
+        color: "#FFA500",
+        fontSize: 14,
+        marginTop: 10,
+        fontStyle: "italic",
+    },
+    buttonContainer: {
+        width: "100%",
+        alignItems: "center",
+        marginTop: 50,
+    },
     proceedButton: {
         backgroundColor: "#FE005F",
         borderRadius: 25,
@@ -231,12 +332,24 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.3,
         shadowOffset: { width: 0, height: 6 },
         shadowRadius: 10,
-        marginTop: 100,
+        minWidth: 250,
     },
     proceedButtonText: {
         color: "#fff",
         fontSize: 16,
         fontWeight: "700",
         letterSpacing: 1,
+    },
+    skipButton: {
+        marginTop: 20,
+        paddingVertical: 10,
+    },
+    skipButtonText: {
+        color: "#999",
+        fontSize: 14,
+        textDecorationLine: "underline",
+    },
+    buttonDisabled: {
+        opacity: 0.5,
     },
 });

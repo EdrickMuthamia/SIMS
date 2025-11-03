@@ -9,23 +9,24 @@ import {
     ScrollView,
     Dimensions,
     Alert,
-    KeyboardAvoidingView,
-    Platform
+    ActivityIndicator
 } from "react-native";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API_ENDPOINTS, saveAuthData } from '../../config/api';
 
 const { height } = Dimensions.get("window");
 
-export default function ProfileSetup() {
+export default function PasswordSetup() {
     const router = useRouter();
     const [email, setEmail] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const handleBack = () => {
         router.back();
@@ -70,23 +71,90 @@ export default function ProfileSetup() {
             return;
         }
 
-        // Save to AsyncStorage
-        try {
-            await AsyncStorage.setItem('userEmail', email.trim());
-            await AsyncStorage.setItem('userPassword', newPassword);
-            await AsyncStorage.setItem('accountSetupComplete', 'true');
+        setLoading(true);
 
-            // Navigate to next screen (you'll tell me which one)
-            Alert.alert("Success", "Account setup complete!", [
-                {
-                    text: "OK",
-                    onPress: () => {
-                        router.replace("/welcome_screens/loading");
-                    }
-                }
-            ]);
+        try {
+            // Get all data from AsyncStorage
+            const organizationName = await AsyncStorage.getItem('organizationName');
+            const organizationLocation = await AsyncStorage.getItem('organizationLocation');
+            const organizationPhoto = await AsyncStorage.getItem('organizationPhoto');
+            const userName = await AsyncStorage.getItem('userName');
+            const organizationBio = await AsyncStorage.getItem('organizationBio');
+
+            // Validate all required data
+            if (!organizationName || !organizationLocation || !userName || !organizationBio) {
+                Alert.alert("Error", "Missing registration data. Please start signup again.");
+                router.replace("/authenitcation_screens/signup");
+                return;
+            }
+
+            console.log('Sending signup request with data:', {
+                organizationName,
+                organizationLocation,
+                hasPhoto: !!organizationPhoto,
+                userName,
+                email: email.toLowerCase().trim()
+            });
+
+            // Call signup API
+            const response = await fetch(API_ENDPOINTS.SIGNUP, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    organizationName: organizationName.trim(),
+                    organizationLocation: organizationLocation.trim(),
+                    organizationPhoto: organizationPhoto || null,
+                    userName: userName.trim(),
+                    organizationBio: organizationBio.trim(),
+                    email: email.toLowerCase().trim(),
+                    password: newPassword
+                })
+            });
+
+            const data = await response.json();
+            console.log('Signup response:', data);
+
+            if (data.success) {
+                // Save auth data
+                await saveAuthData(data.data);
+
+                // Clear temporary signup data
+                await AsyncStorage.multiRemove([
+                    'organizationName',
+                    'organizationLocation',
+                    'organizationPhoto',
+                    'userName',
+                    'organizationBio'
+                ]);
+
+                // Show success message
+                Alert.alert(
+                    "Registration Successful!",
+                    `Welcome ${data.data.user.name}! Your account has been created.`,
+                    [
+                        {
+                            text: "OK",
+                            onPress: () => {
+                                router.replace("/welcome_screens/loading");
+                            }
+                        }
+                    ]
+                );
+            } else {
+                // Show error from server
+                Alert.alert("Registration Failed", data.message || "Unable to create account");
+            }
+
         } catch (error) {
-            Alert.alert("Error", "Something went wrong. Please try again.");
+            console.error('Signup error:', error);
+            Alert.alert(
+                "Connection Error",
+                "Unable to connect to server. Please check your internet connection and try again.\n\nError: " + error.message
+            );
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -103,6 +171,7 @@ export default function ProfileSetup() {
                     style={styles.backButton}
                     onPress={handleBack}
                     activeOpacity={0.7}
+                    disabled={loading}
                 >
                     <Ionicons name="arrow-back" size={28} color="#fff" />
                 </TouchableOpacity>
@@ -132,6 +201,7 @@ export default function ProfileSetup() {
                         keyboardType="email-address"
                         autoCapitalize="none"
                         autoComplete="email"
+                        editable={!loading}
                     />
 
                     {/* New Password Input */}
@@ -145,10 +215,12 @@ export default function ProfileSetup() {
                             onChangeText={setNewPassword}
                             secureTextEntry={!showNewPassword}
                             autoCapitalize="none"
+                            editable={!loading}
                         />
                         <TouchableOpacity
                             onPress={() => setShowNewPassword(!showNewPassword)}
                             style={styles.eyeIcon}
+                            disabled={loading}
                         >
                             <Ionicons
                                 name={showNewPassword ? "eye-off" : "eye"}
@@ -169,10 +241,12 @@ export default function ProfileSetup() {
                             onChangeText={setConfirmPassword}
                             secureTextEntry={!showConfirmPassword}
                             autoCapitalize="none"
+                            editable={!loading}
                         />
                         <TouchableOpacity
                             onPress={() => setShowConfirmPassword(!showConfirmPassword)}
                             style={styles.eyeIcon}
+                            disabled={loading}
                         >
                             <Ionicons
                                 name={showConfirmPassword ? "eye-off" : "eye"}
@@ -185,12 +259,21 @@ export default function ProfileSetup() {
 
                 {/* Done Button */}
                 <TouchableOpacity
-                    style={styles.doneButton}
+                    style={[styles.doneButton, loading && styles.doneButtonDisabled]}
                     onPress={handleDone}
                     activeOpacity={0.8}
+                    disabled={loading}
                 >
-                    <Text style={styles.doneButtonText}>DONE</Text>
+                    {loading ? (
+                        <ActivityIndicator color="#fff" size="small" />
+                    ) : (
+                        <Text style={styles.doneButtonText}>DONE</Text>
+                    )}
                 </TouchableOpacity>
+
+                {loading && (
+                    <Text style={styles.loadingText}>Creating your account...</Text>
+                )}
             </ScrollView>
         </View>
     );
@@ -271,17 +354,28 @@ const styles = StyleSheet.create({
         paddingHorizontal: 80,
         paddingVertical: 15,
         alignItems: "center",
+        justifyContent: "center",
         elevation: 4,
         shadowColor: "#FE005F",
         shadowOpacity: 0.3,
         shadowOffset: { width: 0, height: 6 },
         shadowRadius: 10,
         marginTop: 20,
+        minHeight: 50,
+    },
+    doneButtonDisabled: {
+        opacity: 0.6,
     },
     doneButtonText: {
         color: "#fff",
         fontSize: 16,
         fontWeight: "700",
         letterSpacing: 1,
+    },
+    loadingText: {
+        color: "#FFA500",
+        fontSize: 14,
+        marginTop: 20,
+        fontStyle: "italic",
     },
 });

@@ -10,16 +10,15 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import { COLORS } from "../../constants/theme";
+import { addRole } from "../../services/rolesPermsInstance";
 
 export default function AddRole() {
   const router = useRouter();
   const [roleName, setRoleName] = useState("");
   const [description, setDescription] = useState("");
-  const [selectedColor, setSelectedColor] = useState("#436ab1ff");
+  const [loading, setLoading] = useState(false);
 
-  const colors = ["#436ab1ff", "#F3B52E", "#50C878", "#E74C3C", "#9B59B6"];
-
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!roleName || !description) {
       Alert.alert("Missing Fields", "Please fill in all required fields.");
       return;
@@ -28,13 +27,28 @@ export default function AddRole() {
     const newRole = {
       name: roleName,
       description,
-      color: selectedColor,
     };
 
-    router.push({
-      pathname: "user_screens/roles&perms",
-      params: { newRole: JSON.stringify(newRole) },
-    });
+    try {
+      setLoading(true);
+      const response = await addRole(newRole);
+
+      if (response.status === 201 || response.status === 200) {
+        Alert.alert("Success", "Role added successfully!", [
+          {
+            text: "OK",
+            onPress: () => router.push("user_screens/rolesPerms"),
+          },
+        ]);
+      } else {
+        Alert.alert("Error", "Unexpected response from the server.");
+      }
+    } catch (error) {
+      console.error("Error adding role:", error);
+      Alert.alert("Error", "Failed to add role. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -45,8 +59,14 @@ export default function AddRole() {
           <Text style={styles.backText}>←</Text>
         </TouchableOpacity>
 
-        <Image source={require("../../assets/icon.png")} style={styles.buildingIcon} />
-        <Image source={require("../../assets/splash-icon.png")} style={styles.cubeIcon} />
+        <Image
+          source={require("../../assets/icon.png")}
+          style={styles.buildingIcon}
+        />
+        <Image
+          source={require("../../assets/splash-icon.png")}
+          style={styles.cubeIcon}
+        />
         <Text style={styles.headerText}>ADD NEW ROLE</Text>
       </View>
 
@@ -71,39 +91,27 @@ export default function AddRole() {
           multiline
         />
 
-        <Text style={styles.label}>CHOOSE COLOR:</Text>
-        <View style={styles.colorRow}>
-          {colors.map((color) => (
-            <TouchableOpacity
-              key={color}
-              style={[
-                styles.colorOption,
-                {
-                  backgroundColor: color,
-                  borderWidth: selectedColor === color ? 3 : 1,
-                  borderColor:
-                    selectedColor === color ? "#fff" : "rgba(255,255,255,0.3)",
-                },
-              ]}
-              onPress={() => setSelectedColor(color)}
-            />
-          ))}
-        </View>
-
         {/* Buttons */}
         <View style={styles.buttonRow}>
           <TouchableOpacity
             style={[styles.actionButton, { backgroundColor: "#666" }]}
             onPress={() => router.back()}
+            disabled={loading}
           >
             <Text style={styles.buttonText}>Cancel</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.actionButton, { backgroundColor: COLORS.primary }]}
+            style={[
+              styles.actionButton,
+              { backgroundColor: loading ? "#555" : COLORS.primary },
+            ]}
             onPress={handleSave}
+            disabled={loading}
           >
-            <Text style={styles.buttonText}>Save Role</Text>
+            <Text style={styles.buttonText}>
+              {loading ? "Saving..." : "Save Role"}
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -141,16 +149,6 @@ const styles = StyleSheet.create({
     color: "#fff",
     padding: 10,
     fontSize: 15,
-  },
-  colorRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginVertical: 15,
-  },
-  colorOption: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
   },
   buttonRow: {
     flexDirection: "row",
