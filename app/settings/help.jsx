@@ -1,8 +1,10 @@
-import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, Alert, Modal, Linking } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useState } from 'react';
 
 export default function Help() {
   const router = useRouter();
+  const [showAbout, setShowAbout] = useState(false);
 
   const handleBack = () => {
     router.push('/settings/acc&settings');
@@ -13,6 +15,16 @@ export default function Help() {
     { label: 'Contact Us', icon: require('../../assets/icons/info.png'), hasDot: false },
     { label: 'Report a Problem', icon: require('../../assets/icons/info.png'), hasDot: false },
   ];
+
+  const handleHelpPress = (label) => {
+    if (label === 'About SFAMS') {
+      setShowAbout(true);
+    } else if (label === 'Contact Us') {
+      Linking.openURL('mailto:support@sfams.com?subject=Support Request');
+    } else if (label === 'Report a Problem') {
+      router.push('/settings/report-problem');
+    }
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -27,13 +39,7 @@ export default function Help() {
           <TouchableOpacity
             key={index}
             style={styles.button}
-            onPress={() => {
-              if (item.label === 'Contact Us') {
-                console.log('Opening email for contact: support@sfams.com');
-              } else {
-                console.log(`${item.label} pressed`);
-              }
-            }}
+            onPress={() => handleHelpPress(item.label)}
             activeOpacity={0.7}
           >
             <Image source={item.icon} style={styles.icon} />
@@ -42,6 +48,22 @@ export default function Help() {
           </TouchableOpacity>
         ))}
       </View>
+      <Modal visible={showAbout} animationType="slide" transparent={true}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>About SFAMS</Text>
+            <Text style={styles.modalText}>
+              SFAMS (Student Financial Aid Management System) is a comprehensive mobile application designed to help students manage their financial aid applications, track scholarships, and stay informed about funding opportunities.
+            </Text>
+            <Text style={styles.modalText}>
+              Version: 1.0.0
+            </Text>
+            <TouchableOpacity style={styles.modalButton} onPress={() => setShowAbout(false)} activeOpacity={0.7}>
+              <Text style={styles.modalButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
@@ -103,5 +125,42 @@ const styles = StyleSheet.create({
     height: 10,
     backgroundColor: '#FE005F',
     borderRadius: 5,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: '#333333',
+    padding: 20,
+    borderRadius: 10,
+    width: '80%',
+    alignItems: 'center',
+  },
+  modalTitle: {
+    color: '#FFFF00',
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 15,
+  },
+  modalText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    textAlign: 'center',
+    marginBottom: 10,
+    lineHeight: 20,
+  },
+  modalButton: {
+    backgroundColor: '#FE005F',
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 15,
+  },
+  modalButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });

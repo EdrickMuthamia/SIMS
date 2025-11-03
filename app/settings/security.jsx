@@ -5,7 +5,6 @@ import { useRouter } from 'expo-router';
 export default function Security() {
   const router = useRouter();
   const [twoFactor, setTwoFactor] = useState(false);
-  const [changePassword, setChangePassword] = useState(false);
 
   const handleBack = () => {
     router.push('/settings/acc&settings');
@@ -26,15 +25,19 @@ export default function Security() {
         <Text style={styles.headerText}>SECURITY SETTINGS</Text>
       </View>
       <View style={styles.content}>
-        <TouchableOpacity style={styles.button} onPress={() => console.log('Two-Factor Authentication pressed')} activeOpacity={0.7}>
+        <TouchableOpacity style={styles.button} onPress={() => router.push('/settings/two-factor-setup')} activeOpacity={0.7}>
           <Image source={require('../../assets/icons/Two-Factor  Authentication.png')} style={styles.icon} />
           <Text style={styles.buttonText}>Two-Factor Authentication</Text>
-          <Switch value={twoFactor} onValueChange={setTwoFactor} />
+          <Switch value={twoFactor} onValueChange={(value) => {
+            setTwoFactor(value);
+            if (value) {
+              router.push('/settings/two-factor-setup');
+            }
+          }} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => console.log('Change Password pressed')} activeOpacity={0.7}>
+        <TouchableOpacity style={styles.button} onPress={() => router.push('/settings/change-password')} activeOpacity={0.7}>
           <Image source={require('../../assets/icons/Change  Password.png')} style={styles.icon} />
           <Text style={styles.buttonText}>Change Password</Text>
-          <Switch value={changePassword} onValueChange={setChangePassword} />
         </TouchableOpacity>
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>MY DEVICES</Text>
